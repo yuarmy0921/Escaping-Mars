@@ -1,8 +1,48 @@
 import pygame
 import os, sys
 from pygame.locals import *
-#四個玩家
+#玩家
 #pygame.mouse
+def load_image(name, colorkey = None):
+    pass
+    '''
+    把圖片載下來
+    '''
+    fullname = os.path.join('data', name)
+def load_sound(name):
+    pass
+
+class Player(pygame.sprite.Sprite):
+    '''
+    隨著滑鼠移動
+    碰到迷宮邊界則損血，碰到隕石也損血
+    碰到NPC回血
+
+    '''
+    def __init__(self):
+        pygame.sprite.Sprite.__init__(self)
+        self.image, self.rect = load_image()
+
+    def update(self):
+        '''
+        玩家狀態
+        '''
+        pos = pygame.mouse.get_pos()
+
+    def recover(self):
+
+    def injure(self):
+
+class Dear(pygame.sprite.Sprite):
+    '''
+    寶貝們的技能
+    '''
+    
+    
+    
+    
+
+
 
 
 #兩個NPC
