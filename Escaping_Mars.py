@@ -1,9 +1,12 @@
 import pygame
+import random 
+import math
 import os, sys
 from pygame.locals import *
 from pygame.compat import geterror
 #載入遊戲：還要再回來檢查
 #pygame.image.load()預設得到的type是surface
+#pygame.sprite.Group.update：call the update method
 def load_image(name, colorkey = None):
     '''
     把圖片載下來
@@ -66,7 +69,7 @@ class Player(pygame.sprite.Sprite):
         self.life = 500
         blood_surface = pygame.Surface()
         #紅色滿血：還要再回來設定!!!!!!!!!!
-        pygame.draw.rect(blood_surface, )
+        blood_surface.fill((255,0,0))
         #然後玩家的初始設定大概差不多就結束了
 
     def recover(self):
@@ -84,6 +87,8 @@ class Player(pygame.sprite.Sprite):
         '''
         pos = pygame.mouse.get_pos()
         self.rect.mid = pos
+
+Hua = Player()
     
 class BTS(pygame.sprite.Sprite):
     '''
@@ -114,19 +119,90 @@ J_hope = BTS()
 Jimin = BTS()
 V = BTS()
 Jungkook = BTS()
+BTS_members = pygame.sprite.Group(RM, Jin, Suga, J_hope, Jimin, V, Jungkook)
 
 class NPC(pygame.sprite.Sprite):
+    '''
+    技能都一樣，差別在於對話框不同
+    '''
     def __init__(self):
         pygame.sprite.Sprite.__init__(self)
-        self.image, self.rect = 
+        #記得分別兩個人的對話圖片!!!!!!!!!!!
+        self.image, self.rect = load_image()
+        x, y = None #兩個NPC的初始位置不會重疊
+        #設定對話(optional)
+        self.conversation = []
+        speed = 3
+    
+        #圖片要鏡像反射嗎?在碰到牆的瞬間換圖片：pygame.transform.flip
+        
+    def change_dir(lower, upper):    #再把下面的改一改!!!!!!!!!!!
+        direction = random.randint(lower, upper)
+        radian = math.radians(direction)
+        dx = speed*math.cos(radian)
+        dy = speed*math.sin(radian)
+        return dx, dy
+    
 
-    def rescue(self):
+    def update(self):    #一次update是一個畫格，每一瞬間都在update
+        
+        #位置的資料型態是tuple嗎???
+        #讓人物的rect一直移動：持續畫出新的螢幕
+        #方向等迷宮長相確定好了再來設定
 
-    def update()
+        #判斷碰撞的條件
+        collide = self.rect.collidelist(interact_obj)
+        if collide != -1:   #有撞到東西
+            if 8 <= collide <= 11:    #碰到邊界(只換方向)   還有角落的部分
+                if collide == 8:   #上界
+                    change_dir(180, 360)
+    
+                elif collide == 9:  #下界
+                    change_dir(0, 180)
+
+                elif collide == 10:   #左界   #支援同界角嗎?
+                    change_dir(-90, 90)
+
+                else:  #右界
+                    change_dir(90, 270)
+
+                #之後繼續寫
+            
+            if 1 <= collide <= 7 or collide == 14 or collide == 15:   #碰到BTS或NPC或隕石 #暫且是14和15!!!!!!!!!
+                change_dir(0, 360)
+                #之後繼續寫
+
+            if collide == 0:     #碰到玩家
+                #先停下不要動
+                #然後跳出對話框，填入文字，這個狀態維持幾秒鐘，記得再回來設定對話框大小!!!!!!
+                #自己建立對話框文字圖片(不支援中文)
+                #convert()：建立副本
+                talk_surface = pygame.Surface()
+                talk_surface = talk_surface.convert()  #確認一下這是幹嘛用的!!!!!!
+                talk_surface.fill((255,255,255))
+                #這裡有還沒定義的視窗變數!!!!!!!!!!!!
+                screen.blit(talk_surface, #這裡要擺位置座標)
+                talk_surface.display.update()
+                #等玩家回血!!!!!!!!之後再回來寫!!!!!!!!!!!
+                #換個方向離開
+                change_dir(0, 360)
+                #之後繼續寫!!!!!!!!!!
+
+            if #撞到牆!!!!!!!!!!!!:
+                continue
+
+        else:     #沒撞到甚麼
+            x += dx
+            y += dy
+            self.rect.move_ip(x, y)
 
 BigMac = NPC()
+BigMac.conversation = 
 HongYu = NPC()
-
+#這裡改成load_image的形式!!!!!!!!!!!
+HongYu.conversation = ["你確定你有搞懂自己在幹嘛嗎？", "唉..."]
+#注意這裡還有些變數沒定義!!!!!!!!
+interact_obj = [Hua.rect, RM.rect, Jin.rect, Suga.rect, J_hope.rect, Jimin.rect, V.rect, Jungkook.rect, bound_u.rect, bound_d.rect, bound_l.rect, bound_r.rect, wall, meteorite.rect, BigMac.rect, HongYu.rect]
     
     
     
@@ -134,8 +210,17 @@ HongYu = NPC()
 
 
 
-#兩個NPC
-#大麥：可愛能量/
+
+
+
+
+
+
+
+
+
+
+
 
 
 
