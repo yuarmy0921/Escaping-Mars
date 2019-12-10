@@ -255,6 +255,99 @@ HongYu = NPC()
 HongYu.talk.content = ["你確定你有搞懂自己在幹嘛嗎？", "唉..."]
 #注意這裡還有些變數沒定義!!!!!!!!
 interact_obj = [Hua.rect, RM.rect, Jin.rect, Suga.rect, J_hope.rect, Jimin.rect, V.rect, Jungkook.rect, bound_u.rect, bound_d.rect, bound_l.rect, bound_r.rect, wall, meteorite.rect, BigMac.rect, HongYu.rect]
+
+
+# below is writed by huahua207
+# ---------------------------------------------------------------
+# load_image and load_sound have been writed by yuarmy.
+# now I have to cover the barriers class and border setting.
+
+#blit：把元素貼到windows視窗上
+#rect用來偵測事件，要同時把image和rect貼到windows上
+
+class barriers(pygame.sprite.Sprite):
+    """
+    BTS不可以穿越barriers
+    player碰到會損血
+    player碰到必須有火花或是火焰，這個再匯入image即可
+    """
+    def __init__(self,pos_x,pos_y):
+        pygame.sprite.Sprite.__init__(self)  # call Sprite intializer
+        #self.image, self.rect = load_image(barrier.png, colorkey)
+        self.rect.center = (pos_x, pos_y) #位置
+    def being_touch(self):
+        return
+    def fire(self):
+        fires = []
+        for i in range(3):
+             fire.image, fire.rect = load_image(檔案,colorkey)
+             fires.append(fire)
+        return
+
+#初始化pygame
+pygame.init()
+
+#創建窗口
+screen = pygame.display.set_mode((790,790))
+screen = screen.convert() #convert()建立副本，加快畫布在視窗顯示速度
+
+#載入圖片
+def load_image(name, colorkey=None):
+    fullname = os.path.join('data', name)
+    try:
+        image = pygame.image.load(fullname)
+    except pygame.error as message:
+        print('Cannot load image:', name)
+        raise SystemExit(message)
+    image = image.convert()
+    if colorkey is not None:
+        if colorkey is -1:
+            colorkey = image.get_at((0,0))
+        image.set_colorkey(colorkey, RLEACCEL)
+    return image, image.get_rect()
+
+#background = load_image("mars.jpg") 就load不進來我也不知道為啥嗚嗚嗚嗚
+#background.convert()
+#screen.blit(background, (20,10))
+
+#創建字體對象
+myfont = pygame.font.Font(None, 40)
+white = 255,255,255
+
+#畫東西
+pygame.display.set_caption("畫東西")
+pos_x = 300
+pos_y = 250
+while True:
+    for event in pygame.event.get():
+        if event.type in (QUIT, KEYDOWN):
+            sys.exit()
+        #創建文字
+        screen.fill((255,0,0))
+        textImage = myfont.render("Welcome to the Mars village.", True,white)
+        screen.blit(textImage,(100,100))
+
+        #畫矩形
+        color = 255, 190, 0
+        width = 0
+        pos = pos_x, pos_y, 100, 100
+        
+        pygame.draw.rect(screen,color,pos,width)
+        pygame.display.update()
+
+        #畫圓
+        yellow = 255,255,0
+        position = 100,250
+        radius = 100
+        width = 10
+        
+        pygame.draw.circle(screen, color, position, radius, width)
+        pygame.display.update()
+# ---------------------------------------------------------------------
+# above is writed bt huahua207
+
+
+
     
     
     
