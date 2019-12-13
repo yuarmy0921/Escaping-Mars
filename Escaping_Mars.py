@@ -5,6 +5,7 @@ import math
 import os, sys
 from pygame.locals import *
 from pygame.compat import geterror
+#把collide設成一種event!!!!!!!
 #載入遊戲：還要再回來檢查
 #pygame.image.load()預設得到的type是surface
 #pygame.sprite.Group.update：call the update method
@@ -31,12 +32,15 @@ def load_image(name, prev, colorkey = None):
     return image, image.get_rect()
 
 def load_sound(name):
+    #如果沒有成功載入音樂就不撥放
     class NoneSound:
         def play(self): pass
+    #pygame.mixer：撥放音樂的module
     if not pygame.mixer:
         return NoneSound()
     fullname = os.path.join('game_material/voice/', name)
     try:
+        #create a new sound object
         sound = pygame.mixer.Sound(fullname)
     except pygame.error as message:
         print('Cannot load a sound: ', wav)
@@ -47,7 +51,7 @@ def load_sound(name):
 #遊戲程序：先有一段故事背景，然後再正式進入遊戲，在進入之前滑鼠還不能換成圖片
 #blit：把元素貼到windows視窗上
 #rect用來偵測事件，要同時把image和rect貼到windows上
-#設計遊戲界面
+
 
 class Player(pygame.sprite.Sprite):
     '''
@@ -162,62 +166,45 @@ class NPC(pygame.sprite.Sprite):
     '''
     def __init__(self):
         pygame.sprite.Sprite.__init__(self)
-        #記得分別兩個人的對話圖片!!!!!!!!!!!
         self.image, self.rect = load_image()
-        x, y = None #兩個NPC的初始位置不會重疊
-        #設定對話(optional)
+        self.x, self.y = None, None #兩個NPC的初始位置不會重疊
         speed = 3
-    
-        #圖片要鏡像反射嗎?在碰到牆的瞬間換圖片：pygame.transform.flip
+        #設定對話(optional)
+        self.up = None
+        self.down = None
+        self.left = None
+        self.right = None
         
-    def change_dir(lower, upper):    #再把下面的改一改!!!!!!!!!!!
-        direction = random.randint(lower, upper)
-        radian = math.radians(direction)
-        dx = speed*math.cos(radian)
-        dy = speed*math.sin(radian)
-        return dx, dy
-    
-    def walk(x, y, dx, dy):
-        x += dx
-        y += dy
-        self.rect.move_ip(x, y)
-        return x, y
-
     def talk(self):
         #建立計時器，維持幾秒
         #convert()：建立副本
-        talk_surface = pygame.Surface()
-        talk_surface = talk_surface.convert()  #確認一下這是幹嘛用的!!!!!!
-        talk_surface.fill((255,255,255))
-        #這裡有還沒定義的視窗變數!!!!!!!!!!!!
-        screen.blit(talk_surface, #這裡要擺位置座標)
-        talk_surface.display.update()
+        #記得回來改!!!!!!!!!!!!
+        talk_font = pygame.font.Font("game_material/font/HanaMinA.ttf", 12)
 
-    def update(self):    #一次update是一個畫格，每一瞬間都在update
-        collide = self.rect.collidelist(interact_obj)
-        if collide != -1:   #有撞到東西
-            if 8 <= collide <= 11:    #碰到邊界(只換方向)   還有角落的部分
-                if collide == 8:   #上界
-                    change_dir(180, 360)
-                    walk(x, y, dx, dy)  #先移動一點點，確保不會判斷錯誤
-    
-                elif collide == 9:  #下界
-                    change_dir(0, 180)
-                    walk(x, y, dx, dy)
+    def update(self):    #一直按著可以一直前進，但要考慮碰到玩家的情況，記得clamp在邊界和迷宮裡面
+        #只要偵測每一瞬間有沒有移動
+        #This will get all the messages and remove them from the queue.
+        for event1 in pygame.event.get():     #這個東西只能偵測外接應體的情況#The input queue is heavily dependent on the pygame.displaypygame module to control the display window and screen module. 
+            if event1.type == KEYDOWN:   #移動的情況
+                for event2 in pygame.event.get():
+                    if event2.type != KEYUP and (self.rect.collidelist(interact_obj) < 1 or self.rect.collidelist(interact_obj) > 7):     #還沒放開而且沒碰到玩家
+                        if event1 == self.up:
+                            self.y += speed
+                            self.rect.move_ip(self.x, self.y)
+                        elif event1 == self.down:
+                            self.y -= speed
+                            self.rect.move_ip(self.x, self.y)
+                        elif event1 == self.left:
+                            self.x -= speed
+                            self.rect.move_ip(self.x, self.y)
+                        elif event1 == self.right:
+                            self.x += speed
+                            self.rect.move_ip(self.x, self.y)
+                        else:
+                            pass
+            elif event1.type == 
+                    
 
-                elif collide == 10:   #左界   #支援同界角嗎?
-                    change_dir(-90, 90)
-                    walk(x, y, dx, dy)
-
-                else:  #右界
-                    change_dir(90, 270)
-                    walk(x, y, dx, dy)
-
-                #之後繼續寫
-            
-            if 1 <= collide <= 7 or collide == 14 or collide == 15:   #碰到BTS或NPC或隕石 #暫且是14和15!!!!!!!!!
-                change_dir(0, 360)
-                #之後繼續寫
 
 
 
@@ -228,20 +215,15 @@ class NPC(pygame.sprite.Sprite):
             if collide == 0:     #碰到玩家
                 #先停下不要動
                 #然後跳出對話框，填入文字，這個狀態維持幾秒鐘，記得再回來設定對話框大小!!!!!!
-                #自己建立對話框文字圖片(不支援中文)
                 talk(self)
                 #等玩家回血!!!!!!!!之後再回來寫!!!!!!!!!!!
                 #換個方向離開
-                change_dir(0, 360)
-                walk(x, y, dx, dy)
-                #之後繼續寫!!!!!!!!!!
+                
 
             if #撞到牆!!!!!!!!!!!!:
                 continue
 
-        if collide == -1:     #沒撞到甚麼
-           walk(x, y, dx, dy)
-
+        
 
     
     
