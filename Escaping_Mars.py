@@ -13,7 +13,7 @@ def load_image(name, prev, colorkey = None):
     '''
     把圖片載下來
     '''
-    fullname = os.path.join('game_material'+prev+"/", name)
+    fullname = os.path.join('game_material/'+prev+"/", name)
     try:
         #pygame.image.load(圖片檔案路徑)
         image = pygame.image.load(fullname)
@@ -39,26 +39,22 @@ def load_sound(name):
     if not pygame.mixer:
         return NoneSound()
     fullname = os.path.join('game_material/voice/', name)
+    print(fullname)
     try:
         #create a new sound object
         sound = pygame.mixer.Sound(fullname)
     except pygame.error as message:
-        print('Cannot load a sound: ', wav)
+        print('Cannot load a sound: ', name)
         raise SystemExit(message)
     return sound
 
+
 #玩家
-#遊戲程序：先有一段故事背景，然後再正式進入遊戲，在進入之前滑鼠還不能換成圖片
-#blit：把元素貼到windows視窗上
-#rect用來偵測事件，要同時把image和rect貼到windows上
-
-
 class Player(pygame.sprite.Sprite):
     '''
-    隨著滑鼠移動
-    碰到迷宮邊界則損血，碰到隕石也損血
+    隨著滑鼠移動，滑鼠要換成圖片!!!!!!
+    碰到迷宮邊界則損血
     碰到NPC回血
-
     '''
     def __init__(self):
         pygame.sprite.Sprite.__init__(self)
@@ -88,9 +84,9 @@ class Player(pygame.sprite.Sprite):
         #等BTS設定好再來寫
 
     def update(self):
-        '''
-        玩家狀態
-        '''
+        
+        #玩家狀態
+        
         pos = pygame.mouse.get_pos()
         self.rect.mid = pos
 
@@ -99,15 +95,13 @@ class Player(pygame.sprite.Sprite):
 class BTS(pygame.sprite.Sprite):
     '''
     不用管分別的技能是甚麼，反正只要碰到就損血，另外寫碰到玩家時的行為
-    特效另外放
-    #南俊：破壞/碩珍：冰凍/玧其：石化/號錫：融化/
-    智旻：放大/泰亨：迷路/柾國：嗜睡
-
     '''
+    
     def __init__(self):
         pygame.sprite.Sprite.__init__(self)
         self.image, self.rect = load_image()
         init_pos = None
+        self.skill = None  #這裡是圖片或其他東西!!!!!!!!冰凍/石化/火焰
 
     def change_dir(lower, upper):    #再把下面的改一改!!!!!!!!!!!
         direction = random.randint(lower, upper)
@@ -122,7 +116,8 @@ class BTS(pygame.sprite.Sprite):
         self.rect.move_ip(x, y)
         return x, y
 
-    def skill(self):     #這裡只有說話的部分
+    def skill_n_talk(self):     
+
 
     def update(self):
         collide = self.rect.collidelist(interact_obj)
@@ -151,7 +146,6 @@ class BTS(pygame.sprite.Sprite):
 
             if collide == 0:     #碰到玩家
 
-            if #撞到牆!!!!!!:
 
         if collide == -1:    #沒撞到甚麼
             x += dx 
@@ -161,70 +155,100 @@ class BTS(pygame.sprite.Sprite):
 
 
 class NPC(pygame.sprite.Sprite):
-    '''
-    技能都一樣，差別在於對話框不同
-    '''
+    
+    #技能都一樣，差別在於對話框不同
+    #遇到邊界要後退
+    #遇到玩家或NPC不能疊上去
+    
     def __init__(self):
         pygame.sprite.Sprite.__init__(self)
         self.image, self.rect = load_image()
+        self.size = (self.image.get_width, self.image.get_height)
         self.x, self.y = None, None #兩個NPC的初始位置不會重疊
         speed = 3
-        #設定對話(optional)
         self.up = None
         self.down = None
         self.left = None
         self.right = None
+
+        self.healing = None
+
+        self.content = None
         
-    def talk(self):
+    def talk_n_heal(self):
         #建立計時器，維持幾秒
         #convert()：建立副本
         #記得回來改!!!!!!!!!!!!
+        #維持後要畫回原來的畫面!!!!!!!!!!!!!!
         talk_font = pygame.font.Font("game_material/font/HanaMinA.ttf", 12)
+        #從一群對話中隨機選出一句，對話放頭上(名字以上)，決定適當的距離!!!!!!!!!!
+        conversation = talk_font.render(random.randint(0, len(self.content)-1), )
+        #這邊先看情況!!!!!!!!!!
+        temp_image, temp_rect = None, None
+        screen.blit(conversation, (self.x, self.y + 10))
+        pygame.display.update()
+        pygame.time.wait(5000)
+        #把原本的東西全部畫回去!!!!!!
 
     def update(self):    #一直按著可以一直前進，但要考慮碰到玩家的情況，記得clamp在邊界和迷宮裡面
         #只要偵測每一瞬間有沒有移動
         #This will get all the messages and remove them from the queue.
         for event1 in pygame.event.get():     #這個東西只能偵測外接應體的情況#The input queue is heavily dependent on the pygame.displaypygame module to control the display window and screen module. 
-            if event1.type == KEYDOWN:   #移動的情況
+            if event1.type == KEYDOWN:   #移動的情況，同時按兩個鍵!!!!!!!!!!!!!!!!!
                 for event2 in pygame.event.get():
-                    if event2.type != KEYUP and (self.rect.collidelist(interact_obj) < 1 or self.rect.collidelist(interact_obj) > 7):     #還沒放開而且沒碰到玩家
-                        if event1 == self.up:
-                            self.y += speed
-                            self.rect.move_ip(self.x, self.y)
-                        elif event1 == self.down:
-                            self.y -= speed
-                            self.rect.move_ip(self.x, self.y)
-                        elif event1 == self.left:
-                            self.x -= speed
-                            self.rect.move_ip(self.x, self.y)
-                        elif event1 == self.right:
-                            self.x += speed
-                            self.rect.move_ip(self.x, self.y)
-                        else:
-                            pass
-            elif event1.type == 
-                    
+                    if event2.type != KEYUP:     #還沒放開
+                        if self.rect.collidelist(interact_obj) == -1:   #沒碰到任何東西
+                            if event1 == self.up:
+                                self.y += speed
+                                self.rect.move_ip(self.x, self.y)
+                            elif event1 == self.down:
+                                self.y -= speed
+                                self.rect.move_ip(self.x, self.y)
+                            elif event1 == self.left:
+                                self.x -= speed
+                                self.rect.move_ip(self.x, self.y)
+                            elif event1 == self.right:
+                                self.x += speed
+                                self.rect.move_ip(self.x, self.y)
+                            else:
+                                pass
+                        elif self.rect.collidelist(interact_obj) == 0: #碰到玩家
+                            if pygame.event.poll() == self.healing:
+                                if event1 == self.up:
+                                    self.y -= speed
+                                    self.rect.move_ip(self.x, self.y)
+                                    #這裡要呼叫玩家回血同時放出對話!!!!!!!!
+                                    talk_n_heal()
+                                    #回血!!!!!!!!!
 
 
+                                elif event1 == self.down:
+                                    self.y += speed
+                                    self.rect.move_ip(self.x, self.y)
+                                elif event1 == self.left:
+                                    self.x += speed
+                                    self.rect.move_ip(self.x, self.y)
+                                elif event1 == self.right:
+                                    self.x -= speed
+                                    self.rect.move_ip(self.x, self.y)
+                                else:
+                                    pass
 
-
-        #位置的資料型態是tuple嗎???
-        #讓人物的rect一直移動：持續畫出新的螢幕
-        #方向等迷宮長相確定好了再來設定
-
-            if collide == 0:     #碰到玩家
-                #先停下不要動
-                #然後跳出對話框，填入文字，這個狀態維持幾秒鐘，記得再回來設定對話框大小!!!!!!
-                talk(self)
-                #等玩家回血!!!!!!!!之後再回來寫!!!!!!!!!!!
-                #換個方向離開
-                
-
-            if #撞到牆!!!!!!!!!!!!:
-                continue
-
-        
-
+                        else:   #有碰到玩家以外的東西東西要後退
+                            if event1 == self.up:
+                                self.y -= speed
+                                self.rect.move_ip(self.x, self.y)
+                            elif event1 == self.down:
+                                self.y += speed
+                                self.rect.move_ip(self.x, self.y)
+                            elif event1 == self.left:
+                                self.x += speed
+                                self.rect.move_ip(self.x, self.y)
+                            elif event1 == self.right:
+                                self.x -= speed
+                                self.rect.move_ip(self.x, self.y)
+                            else:
+                                pass
     
     
     
@@ -270,7 +294,7 @@ maze_obj = maze_obj.convert() #convert()建立副本，加快畫布在視窗顯�
 
 #創建字體對象
 myfont = pygame.font.Font(None, 40)
-white = 255,255,255
+white = (255,255,255)
 
 #畫東西
 pygame.display.set_caption("畫東西")
@@ -282,7 +306,7 @@ while True:
             sys.exit()
         #創建文字
         screen.fill((255,0,0))
-        textImage = myfont.render("Welcome to the Mars village.", True,white)
+        textImage = myfont.render("Welcome to the Mars village.", True, white)
         screen.blit(textImage,(100,100))
 
         #畫矩形
@@ -335,3 +359,4 @@ while True:
 #迷宮主體
 #路障
 #隕石
+'''
