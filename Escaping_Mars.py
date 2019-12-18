@@ -56,15 +56,14 @@ class Player(pygame.sprite.Sprite):
     碰到迷宮邊界則損血
     碰到NPC回血
     '''
-    def __init__(self):
+    def __init__(self,position):
         pygame.sprite.Sprite.__init__(self)
         #被取代成滑鼠的圖片，已經convert完了
         self.mouse_image, self.mouse_rect = load_image()
         #這裡我也不知道在幹嘛!!!!!!!!!!!
         self.mouse_image.convert_alpha()
         pygame.mouse.set_visible(False)
-        #設定玩家初始位置：再回來改!!!!!!!!!!!!!!!!!
-        init_pos = 
+        self.position = position
         #這裡的screen變數要再協調好，這還是一個未被定義的變數!!!!!!!!!!!!!!!!!
         screen.blit(self.mouse_image, self.mouse_rect)
         #設定玩家血量，然後顯示血條：調整到難易適中，還要再回來設定!!!!!!!!!
@@ -260,24 +259,6 @@ class NPC(pygame.sprite.Sprite):
 #blit：把元素貼到windows視窗上
 #rect用來偵測事件，要同時把image和rect貼到windows上
 
-class barriers(pygame.sprite.Sprite):
-    """
-    BTS不可以穿越barriers
-    player碰到會損血
-    player碰到必須有火花或是火焰，這個再匯入image即可
-    """
-    def __init__(self,pos_x,pos_y):
-        pygame.sprite.Sprite.__init__(self)  # call Sprite intializer
-        #self.image, self.rect = load_image(barrier.png, colorkey)
-        self.rect.center = (pos_x, pos_y) #位置
-    def being_touch(self):
-        return
-    def fire(self):
-        fires = []
-        for i in range(3):
-             fire.image, fire.rect = load_image(檔案,colorkey)
-             fires.append(fire)
-        return
 
 #初始化pygame
 pygame.init()
@@ -295,6 +276,77 @@ maze_obj = maze_obj.convert() #convert()建立副本，加快畫布在視窗顯�
 #創建字體對象
 myfont = pygame.font.Font(None, 40)
 white = (255,255,255)
+
+class MazeBarrier(pygame.sprite.Sprite):
+
+    def __init__(self, position, texture):
+        super().__init__()
+        self.texture = texture
+        self.image = pygame.surfarray.make_surface(np.transpose(texture ,(1, 0, 2)))
+        self.rect = pygame.Rect(position, self.texture.shape[:2])
+        # 不太清楚這裡，我想要load image，texture到底是幹嘛用的
+    def fire(self): # 用collide去判斷有沒有撞到，有的畫就會觸發這個method
+        return
+        
+# 底圖
+class Maze(pygame.sprite.Sprite):
+
+    def __init__(self):
+        super().__init__()
+        self.image, self.rect = load_image(mars.jpg, colorkey)
+        # 如果load image, type 要怎麼處理？
+
+# 遊戲最最初始值設定，主程式一定是要先跑這個，阿然後可能還要再call NPC and BTS
+class MazeGame:
+
+    def __init__(self):
+        self.unit = 15
+
+        # The following attributes will be initialized later
+        self.maze = None
+        self.player = None
+        self.barriers = []
+        self.exit_point = None
+
+        # Build Maze
+        with open("maze.txt"), "r") as f:
+            # Reserve space for maze
+            lines = f.read().strip("\n"),split("\n") # Read the map
+            maze = np.zeros(len(lines)*unit, len(lines[0])*unit, 3) # (height, width, depth)
+
+            # Initialize maze row by row
+            for row, linr in enumerate(lines):
+                for col, symbol in enumerate(line):
+                    if symbol == '0': # 障礙物，loadimage進來
+                        maze[row*unit:row*unit+unit, col*unit:col*unit+unit, :] = load_image("barrier.png")
+                        
+                        # Create barrier
+                        barrier = MazeBarrier((col*unit, row*unit), maze[row*unit:row*unit+unit, col*unit:col*unit+unit, :].copy())
+                        self.barriers.append(barrier)
+                    elif symbol == '1': # 路，不需要load image，用背景即可
+                        pass
+                    elif symbol == 'S': # 起點，call player_class
+                        # 有要set color 嗎？沒有就pass下面那個
+                        maze[row*unit:row*unit+unit, col*unit:col*unit+unit, 0] = 255
+
+                        # Create player
+                        self.player = Player((col*unit, row*unit))
+                        # 我想要做的是，這是在傳player位置，安捏干丟？？？？
+                    elif symbol == 'F': # 終點
+                        # 設成紅色
+                        maze[row*unit:row*unit+unit, col*unit:col*uit+unit, 0] = 255
+
+                        # Record the exit point
+                        self.exit_point = (col*unit, row*unit)
+                    else:
+                        raise Exception("Invalid symbol in maze '%s'" % symbol)
+        # Save maze
+        self.maze = Maze((0,0),maze.copy())
+
+        # Create groups
+        self.player_group = pygame.sprite.Group(self.player)
+        self.barrier_group = pygame.sprite.Group(self.barriers)
+
 
 #畫東西
 pygame.display.set_caption("畫東西")
