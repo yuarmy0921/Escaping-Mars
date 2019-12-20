@@ -17,44 +17,6 @@ from pygame.compat import geterror
 #載入遊戲：還要再回來檢查
 #pygame.image.load()預設得到的type是surface
 #pygame.sprite.Group.update：call the update method
-def load_image(name, prev, colorkey = None):
-    '''
-    把圖片載下來
-    '''
-    fullname = os.path.join('game_material/'+prev+"/", name)
-    try:
-        #pygame.image.load(圖片檔案路徑)
-        image = pygame.image.load(fullname)
-    except pygame.error as message:
-        print('Cannot load image: ', name)
-        raise SystemExit(message)
-    #把圖片轉換成最適合呈現的樣子
-    image = image.convert()
-    #這邊是在幹嘛?
-    #colorkey：透明色鍵
-    if colorkey is not True:
-        if colorkey is -1:
-            colorkey = image.get_at((0, 0))
-        image.set_colorkey(colorkey, RLEACCEL)
-    #get_rect():把rect設定成圖片大小
-    return image, image.get_rect()
-
-def load_sound(name):
-    #如果沒有成功載入音樂就不撥放
-    class NoneSound:
-        def play(self): pass
-    #pygame.mixer：撥放音樂的module
-    if not pygame.mixer:
-        return NoneSound()
-    fullname = os.path.join('game_material/voice/', name)
-    print(fullname)
-    try:
-        #create a new sound object
-        sound = pygame.mixer.Sound(fullname)
-    except pygame.error as message:
-        print('Cannot load a sound: ', name)
-        raise SystemExit(message)
-    return sound
 
 
 #玩家
@@ -345,6 +307,44 @@ while True:
 # ---------------------------------------------------------------------
 # above is writed bt huahua207
 
+def load_image(name, prev, colorkey = None):
+    
+    把圖片載下來
+    
+    fullname = os.path.join('game_material/'+prev+"/", name)
+    try:
+        #pygame.image.load(圖片檔案路徑)
+        image = pygame.image.load(fullname)
+    except pygame.error as message:
+        print('Cannot load image: ', name)
+        raise SystemExit(message)
+    #把圖片轉換成最適合呈現的樣子
+    image = image.convert()
+    #這邊是在幹嘛?
+    #colorkey：透明色鍵
+    if colorkey is not True:
+        if colorkey is -1:
+            colorkey = image.get_at((0, 0))
+        image.set_colorkey(colorkey, RLEACCEL)
+    #get_rect():把rect設定成圖片大小
+    return image, image.get_rect()
+
+def load_music(name):
+    #如果沒有成功載入音樂就不撥放
+    class NoneMusic:
+        def play(self): pass
+    #pygame.mixer：撥放音樂的module
+    if not pygame.mixer:
+        return NoneSound()
+    fullname = os.path.join('game_material/voice/', name)
+    print(fullname)
+    try:
+        #create a new sound object
+        music = pygame.mixer.music.load(fullname)
+    except pygame.error as message:
+        print('Cannot load a music: ', name)
+        raise SystemExit(message)
+    return music
 
 
     
@@ -376,16 +376,16 @@ while True:
 #迷宮主體
 #路障
 #隕石
-'''
+
 
 def main():
+    #--------------------------------------------------------------------------------------------------------------------
+    #問題：去背圖檔colorkey的設定!!!!!!!!!!!!!!!!!!!!!!!!
     pygame.init()
-    pygame.font.init()
-    pygame.display.init()
-    pygame.mixer.init()
+    pygame.mixer.init(channels = 6)
+    #pygame.font.init()
+    #pygame.display.init()
     screen_size = (1440, 900)
-    #創建遊戲視窗
-    #這也是一個Surface
     screen = pygame.display.set_mode(screen_size)
     pygame.display.set_caption("Escaping Mars")
 #---------------------------------------------------------------------------------------------------------------
@@ -393,12 +393,9 @@ def main():
     #while前面是設定的部分
     init_bg = load_image("mars.png", "init_pic")
     #再決定要用甚麼音樂，這是一個音樂object
-    init_bgm = load_sound("sea.wav")
-    #先使用預設字體，之後再來改成漂亮的!!!!!!
-    #調整大小
-    #撥放音樂
+    init_bgm = load_music("sea.mp3")
     caption_font = pygame.font.Font("game_material/font/NIGHTMARE/Nightmare.ttf", 100)
-    dumb = pygame.font.Font("game_material/font/Conserta/Conserta.ttf", 40)
+    dumb = pygame.font.Font("game_material/font/Conserta/Conserta.ttf", 60)
     #字體顏色之後再來調!!!!!!!!
     caption = caption_font.render("Escaping Mars", True, (255, 255, 255))
     tbc = dumb.render("Click to continue", True, (255, 255, 255))
@@ -421,25 +418,19 @@ def main():
     #最後記得拿掉
     #記得回來改字體大小!!!!!!!!!!
     next = False
-    init_HongYu = load_image("HongYu.png", "init_pic")
-    init_BigMac = load_image("BigMac.png", "init_pic")
     story_font = pygame.font.Font("game_material/font/HanaMin/HanaMinA.ttf", 30)
-    saying_font = pygame.font.Font("game_material/font/HanaMin/HanaMinA.ttf", 20)
 
     caption = caption_font.render("Story", True, (255, 255, 255))
-    story_line1 = story_font.render("    你是火星村的村長，某一天不知道發生", True, (255, 255, 255))
-    story_line2 = story_font.render("甚麼事，火星村村民都瘋了！他們開始漫無目", True, (255, 255, 255))
-    story_line3 = story_font.render("的地亂走並且開始攻擊人！你深愛著你的村民", True, (255, 255, 255))
-    story_line4 = story_font.render("們，不希望攻擊回去並且開始想盡辦法逃出火", True, (255, 255, 255))
-    story_line5 = story_font.render("星村，如此一來才能拿到解藥並且拯救他們。", True, (255, 255, 255))
-    story = [story_line1, story_line2, story_line3, story_line4, story_line5]
-    saying = saying_font.render("雖然你看起來不怎麼樣，但我還是會盡量幫助你啦", True, (255, 255, 255))
+    story_line1 = story_font.render("    你是火星村的村長，某一天不知道發生甚麼事，火星村", True, (255, 255, 255))
+    story_line2 = story_font.render("村民都瘋了！他們開始漫無目的地亂走並且開始攻擊人！你", True, (255, 255, 255))
+    story_line3 = story_font.render("深愛著你的村民們，不希望攻擊回去並且開始想盡辦法逃出", True, (255, 255, 255))
+    story_line4 = story_font.render("火星村，如此一來才能拿到解藥並且拯救他們。", True, (255, 255, 255))
     #對話框停留直到玩家按下按鍵
     #畫出背景圖，左上角座標
-    screen.blits(((init_bg[0], (0, 0)), (caption, (140, 90)), (init_HongYu[0], (100, 255))))
+    screen.blits(((init_bg[0], (0, 0)), (caption, (140, 90))))
     #記得回來設座標!!!!!!!!!!!!!!!!!!!
-    x = 760
-    y = 220
+    x = 140
+    y = 300
     for sentence in story:
         screen.blit(sentence, (x, y))
         y += 100
@@ -451,61 +442,29 @@ def main():
                 next = True
                 break
         if next:
-            break
-
-    next = False
-    screen.blit(saying, (300, 300))
-    #更新是指螢幕上的"某塊區域"
-    pygame.display.update(saying.get_rect())
-    while True:
-        for event in pygame.event.get():  #等待(還沒按下按鍵則在這個loop裡面停留)
-            if event.type == MOUSEBUTTONDOWN:
-                next = True
-                break
-        if next:
             next = False
             break
-    
 #----------------------------------------------------------------------------------------------------------------
     #這是instruction畫面!!!!!!!!!!!
-    #記得去下載英文字體!!!!!!!!!!!!!
-    #最後記得再換一張圖!!!!!!!!
-    #先把必要元素都指定好
     caption = caption_font.render("Instruction", True, (255, 255, 255))
-    instruct_font = pygame.font.Font("game_material/font/HanaMin/HanaMinA.ttf", 25)
+    instruct_font = pygame.font.Font("game_material/font/HanaMin/HanaMinA.ttf", 30)
     instruct1 = instruct_font.render("1. 使用滑鼠控制人物，注意不要碰到邊界，會受傷QQ", True, (255, 255, 255))
-    instruct2 = instruct_font.render("2. NPC是可以控制的，移動方式分別是WASD和上下左右", True, (255, 255, 255))
-    instruct2_1 = instruct_font.render("   ，治療方式分別是C和H，在碰到玩家時按下按鍵可施予治療", True, (255, 255, 255))
+    instruct2 = instruct_font.render("2. NPC是可以控制的，移動方式分別是WASD和上下左右，", True, (255, 255, 255))
+    instruct2_1 = instruct_font.render("   治療方式分別是C和H，在碰到玩家時按下按鍵可施予治療", True, (255, 255, 255))
     instruct3 = instruct_font.render("3. NPC們都是善良的天使，雖然可能受到精神傷害XD但必要時", True, (255, 255, 255))
     instruct3_1 = instruct_font.render("   還是向他們求救吧！", True, (255, 255, 255))
     instruct4 = instruct_font.render("4. 在限制時間內保留至少一滴血走到終點", True, (255, 255, 255))
     instruct5 = instruct_font.render("5. 遊戲愉快:D", True, (255, 255, 255))
     instruct = [instruct1, instruct2, instruct2_1, instruct3, instruct3_1, instruct4, instruct5]
-
-    saying = saying_font.render("能力到哪就走到哪，誠實面對自己~", True, (255, 255, 255))
-
-    init_BigMac = load_image("BigMac.png", "init_pic")
-
     #一定要照順序貼到螢幕上!!!!!
-    screen.blits(((init_bg[0], (0, 0)), (caption, (140, 90)), (init_BigMac[0], (100, 255))))
-    x = 700
-    y = 220
+    screen.blits(((init_bg[0], (0, 0)), (caption, (140, 90))))
+    x = 140
+    y = 300
     for item in instruct:
         screen.blit(item, (x, y))
         y += 100
 
     pygame.display.flip()
-    while True:
-        for event in pygame.event.get():  #等待(還沒按下按鍵則在這個loop裡面停留)
-            if event.type == MOUSEBUTTONDOWN:
-                next = True
-                break
-        if next:
-            break
-    next = False
-    screen.blit(saying, (300, 300))
-    #更新是指螢幕上的"某塊區域"
-    pygame.display.update(saying.get_rect())
     while True:
         for event in pygame.event.get():  #等待(還沒按下按鍵則在這個loop裡面停留)
             if event.type == MOUSEBUTTONDOWN:
@@ -520,3 +479,36 @@ def main():
     pygame.quit()
 
 main()
+
+
+#這是BTS的
+def update(self):
+        if 8 <= collide <= 11:    #碰到邊界(只換方向)   還有角落的部分
+            if collide == 8:   #上界
+                change_dir(180, 360)
+                walk(x, y, dx, dy)
+    
+            if collide == 9:  #下界
+                change_dir(0, 180)
+                walk(x, y, dx, dy)
+
+            elif collide == 10:   #左界   #支援同界角嗎?
+                change_dir(-90, 90)
+                walk(x, y, dx, dy)
+
+            else:  #右界
+                change_dir(90, 270)
+                walk(x, y, dx, dy)
+                #之後繼續寫
+            
+        if 1 <= collide <= 7 or collide == 14 or collide == 15:   #碰到BTS或NPC或隕石 #暫且是14和15!!!!!!!!!
+                change_dir(0, 360)
+                #之後繼續寫
+
+        if collide == 0:     #碰到玩家
+
+
+        if collide == -1:    #沒撞到甚麼
+            x += dx 
+            y += dy
+            self.rect.move_ip(x, y)
