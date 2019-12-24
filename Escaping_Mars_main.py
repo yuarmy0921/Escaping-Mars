@@ -213,6 +213,8 @@ def main():
 
         # NPC的情況
         for event in pygame.event.get():
+            if event.type==pygame.QUIT :
+            pygame.quit()
             if event.type == KEYDOWN:
                 # 這裡是大麥控制
                 if event == BigMac.up:
@@ -392,44 +394,123 @@ def main():
 
 #-------------------------------------------------------------------------------------------------------------
     #這是過關畫面!!!!!!!
+    color = (255, 255, 255)
     while success_flag:
         success_music = load_sound("mikrokosmos.wav")
-        success_bg = load("success_bg.jpg", "ending_pic")
-        success_font = pygame.font.Font("game_material/HuaKangXiuFengTiFan/HuaKangXiuFengTiFan", 20)
-        success_s1 = success_font.render("")
-
+        success_bg = load_image("success_bg.jpg", "ending_pic")
+        success_font = pygame.font.Font("game_material/font/HuaKangXiuFengTiFan/HuaKangXiuFengTiFan.ttf", 20)
+        success_s1 = success_font.render("謝謝你救了我們，", True, color)
+        success_s2 = success_font.render("以後不管遇到什麼困難，", True, color)
+        success_s3 = success_font.render("都請保持著這顆善良而真誠的心堅持下去吧！", True, color)
+        text = [success_s1, success_s2, success_s3]
         success_music.play(-1)
+        screen.blit(success_bg[0], (0, 0))
 
+        x, y = 140, 300
+        for sentence in text:
+            screen.blit(sentence, (x, y))
+            y += 100
+        pygame.display.update()
+        while True:
+            for event in pygame.event.get():
+                if event.type == MOUSEBUTTONDOWN:
+                    next = True
+            if next:
+                next = False
+                break
+        success_music.stop()
 #--------------------------------------------------------------------------------------------------------------
     #這是失敗畫面QQ
     while fail_flag:
         fail_music = load_sound("so_far_away.wav")
-        fail_bg = load_image("", "ending_pic")
+        fail_bg = load_image("fail_bg", "ending_pic")
+        fail_font = pygame.font.Font("game_material/font/HuaKangXiuFengTiFan/HuaKangXiuFengTiFan.ttf", 20)
+        fail_s1 = fail_font.render("很遺憾你沒有成功，但是也不要太難過，", True, color)
+        fail_s2 = fail_font.render("這只是個遊戲，在現實生活中遇到的困難比這個大多了，", True, color)
+        fail_s3 = fail_font.render("當遇到挫折的時候請不要輕易放棄，", True, color)
+        fail_s4 = fail_font.render("求助於身邊的朋友，即使他們會先恥笑你，", True, color)
+        fail_s5 = fail_font.render("但最終還是會拉你一把。", True, color)
+        fail_s6 = fail_font.render("如果連你朋友都不幫你的話...", True, color)
+        fail_s7 = fail_font.render("   ", True, color)
+        fail_s8 = fail_font.render("   ", True, color)
+        fail_s9 = fail_font.render("   ", True, color)
+        fail_s10 = fail_font.render("   ", True, color)
+        fail_s11 = fail_font.render("   ", True, color)
+        fail_s12 = fail_font.render("那你就真的沒救了。", True, color)
+        text = [fail_s1, fail_s2, fail_s3, fail_s4, fail_s5, fail_s6, fail_s7, fail_s8, fail_s9, fail_s10, fail_s11, fail_s12]
         fail_music.play(-1)
-
+        screen.blit(fail_bg[0], (0, 0))
+        x, y = 140, 300
+        for sentence in text:
+            screen.blit(sentence, (x, y))
+            y += 50
+        pygame.display.update()
+        
+        while True:
+            for event in pygame.event.get():
+                if event.type == MOUSEBUTTONDOWN:
+                    next = True
+            if next:
+                break
+        fail_music.stop()
 #-------------------------------------------------------------------------------------------------
     #結束畫面
+    class Ending(pygame.sprite.Sprite):
+        def __init__(self):
+            pygame.sprite.Sprite.__init__(self)
+            self.image = None 
     ending_music = load_sound("magic_shop.wav")
+    ending_bg = load_image("mars.jpg", "main_pic")
+    screen.blit(ending_bg[0], (0, 0))
+    pygame.display.flip()
     ending_music.play(-1)
-    color = ()
-    title_font = pygame.font.Font.set_bold("game_material/font/HanaMin/HanaMinA.ttf", 20)
+    color = (255, 255, 255)
+    title_font = pygame.font.Font("game_material/font/HanaMin/HanaMinA.ttf", 20)
+    title_font.set_bold(True)
     content_font = pygame.font.Font("game_material/font/HanaMin/HanaMinA.ttf", 15)
-    t1 = title_font.render("GUI Design", True, color)
-    c1 = content_font.render("林郁敏", True, color)
-    t2 = title_font.render("Game Configuration Construction", True, color)
-    c2 = content_font.render("林郁敏", True, color)
-    t3 = title_font.render("Character Design", True, color)
-    c3 = content_font.render("", True, color)
-    t4 = title_font.render("Character Image", True, color)
-    c4 = content_font.render("BT21", True, color)
-    t5 = title_font.render("Maze Design", True, color)
-    c5 = content_font.render("張悅恩", True, color)
-    t6 = title_font.render("Background Music", True, color)
+    t1 = Ending()
+    t1.image = title_font.render("GUI Design", True, color)
+    c1 = Ending()
+    c1.image = content_font.render("林郁敏", True, color)
+    t2 = Ending()
+    t2.image = title_font.render("Game Configuration Construction", True, color)
+    c2 = Ending()
+    c2.image = content_font.render("林郁敏", True, color)
+    t3 = Ending()
+    t3.image = title_font.render("Character Design", True, color)
+    c3 = Ending()
+    c3.image = content_font.render("", True, color)
+    t4 = Ending()
+    t4.image = title_font.render("Character Image", True, color)
+    c4 = Ending()
+    c4.image = content_font.render("BT21", True, color)
+    t5 = Ending()
+    t5.image = title_font.render("Maze Design", True, color)
+    c5 = Ending()
+    c5.image = content_font.render("張悅恩", True, color)
+    t6 = Ending()
+    t6.image = title_font.render("Background Music", True, color)
     c6 = content_font.render("BTS-Sea     BTS-So far away     BTS-Epiphany     BTS-Magic shop     BTS-Mikrokosmos     BTS-Make it right     BTS-Tomorrow     BTS-Save ME", True, color)
-    t7 = title_font.render("Special THANKS TO", True, color)
-    c7 = content_font.render("林宗男 教授     ", True, color)
-    ending = content_font.render("All rights not reserved", True, color)
+    t7 = Ending()
+    t7.image = title_font.render("Special THANKS TO", True, color)
+    c7 = Ending()
+    c7.image = content_font.render("林宗男 教授     顏宏宇 助教     劉正仁 助教     劉玟慶 助教     郭育昇 助教", True, color)
+    ending = Ending()
+    ending.image = content_font.render("All rights not reserved", True, color)
     #
+    text = [t1, c1, t2, c2, t3, c3, t4, c4, t5, c5, t6, c6, t7, c7, ending]
+    x = 200
+    y = 100
+    for sentence in text:
+        screen.blit(sentence.image, (x, y))
+        y += 50
+    pygame.display.update()
+    cal = 0
+    while cal <= 1000:
+        for sentence in text:
+            sentence.move_ip(sentence.rect[0], sentence.rect[1]+10)
+        pygame.display.update()
+        cal += 100
     ending_music.fadeout(5000)
 
     pygame.quit()
