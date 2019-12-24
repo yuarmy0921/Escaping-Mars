@@ -45,6 +45,7 @@ def load_sound(name):
         raise SystemExit(message)
     return sound
 
+screen = pygame.display.set_mode((1440, 800))
 
 #玩家
 class Player(pygame.sprite.Sprite):
@@ -61,10 +62,11 @@ class Player(pygame.sprite.Sprite):
         screen = draw
         self.dead = False
         #被取代成滑鼠的圖片，已經convert完了
-        self.image, self.rect = load_image()
+        # 回來改圖片！不要讓你家寶貝變成barrier！他會哭！QQ
+        self.image, self.rect = load_image("huahua.png","main_pic")
         #把圖片轉成可以快速貼到螢幕上的形式
         self.image = self.image.convert_alpha()
-        self.size = (self.rect.[2]//2, self.rect.[3]//2)
+        self.size = (self.rect[2]//2, self.rect[3]//2)
         pygame.mouse.set_visible(False)
         #初始位置
         self.pos = "自己設定!!!!!!!!!!!!!!!!!!!!!!!!!"
@@ -81,11 +83,11 @@ class Player(pygame.sprite.Sprite):
         self.blood_surface.fill((255,0,0))
         self.empty_surface = pygame.Surface((150, 20))
         self.empty_surface.fill((255, 255, 255))
-        screen.blits(((self.empty_surface, (500, 150))), (self.blood_surface, (500, 150))))
+        screen.blits(((self.empty_surface, (500, 150))), (self.blood_surface, (500, 150)))
         #然後玩家的初始設定大概差不多就結束了
         self.scream = load_sound("scream.wav")
 
-    def walk(Self):
+    def walk(self):
         self.pos = pygame.mouse.get_pos()
         self.rect[0], self.rect[1] = self.pos[0]-self.size[0], self.pos[1]-self.size[1]
         self.rect.move_ip(self.rect[0], self.rect[1])
@@ -155,13 +157,14 @@ class BTS(pygame.sprite.Sprite):
     def stepback(self):
         self.move_ip(self.last_pos[0], self.last_pos[1])
 
-    def change_dir():    
+    def change_dir(self):    
         direction = random.randint(0, 360)
         radian = math.radians(direction)
         self.dx = speed*math.cos(radian)
         self.dy = speed*math.sin(radian)
 
-    def walk(x = self.x, y = self.y, dx = self.dx, dy = self.dy):
+    def walk(self,x, y, dx, dy):
+        self.x, self.y, self.dx, self.dy = x, y, dx, dy
         self.x += self.dx
         self.y += self.dy
         self.rect.move_ip(self.x, self.y)
@@ -265,6 +268,7 @@ class MazeBarrier(pygame.sprite.Sprite):
 
     def __init__(self, position):
         super().__init__()
+        self.position = position
         self.image, self.rect = load_image("barrier.png", "main_pic")
     def fire(self):
         # 每一個障礙物都會燒起來！
@@ -284,14 +288,12 @@ class MazeGame:
         self.maze = None
         self.barriers = []
         self.exit_point = None
-        self.Player = Player()
         self.NPC = NPC()
         self.BTS = BTS()
 
-        self.ground = load_image("mars.jpg", "main_pic")
        
         # Build Maze
-        with open("maze.txt"), "r") as f:
+        with open(("maze.txt"), "r") as f:
             # Reserve space for maze
             lines = f.read().strip("\n"),split("\n") # Read the map
             maze = np.zeros(len(lines)*unit, len(lines[0])*unit, 3) # (height, width, depth)
@@ -323,3 +325,5 @@ class MazeGame:
 
         # Create groups
         self.barrier_group = pygame.sprite.Group(self.barriers)
+
+game = MazeGame()

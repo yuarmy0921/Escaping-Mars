@@ -184,7 +184,7 @@ def main():
     BTS_group = pygame.sprite.Group(RM, Jin, Suga, J_hope, Jimin, V, Jungkook)
 
     barriers = Game.barrier_group
-
+    
     #--音樂還有背景的部分--------------------------------------------------------------------------------------------------------------
     main_bg = load_image("mars.jpg", "main_pic")
     #把喜歡的歌都放進來吧!!!
