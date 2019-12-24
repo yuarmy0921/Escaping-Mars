@@ -5,8 +5,6 @@ import math
 import os, sys
 from pygame.locals import *
 from pygame.compat import geterror
-#把collide設成一種event!!!!!!!
-#載入遊戲：還要再回來檢查
 #pygame.image.load()預設得到的type是surface
 #pygame.sprite.Group.update：call the update method
 def load_image(name, prev, colorkey = None):
@@ -22,8 +20,6 @@ def load_image(name, prev, colorkey = None):
         raise SystemExit(message)
     #把圖片轉換成最適合呈現的樣子
     image = image.convert()
-    #這邊是在幹嘛?
-    #colorkey：透明色鍵
     if colorkey is not True:
         if colorkey is -1:
             colorkey = image.get_at((0, 0))
@@ -56,21 +52,27 @@ class Player(pygame.sprite.Sprite):
     碰到迷宮邊界則損血
     碰到NPC回血
     不會呼叫外面的參數
-    sprite的rect???????????
+    只有玩家用pos，其他都用x y
+    rect吃四個參數(左上角x座標, 左上角y座標, 長, 寬)
     '''
-    def __init__(self):
+    def __init__(self, draw = screen):
         pygame.sprite.Sprite.__init__(self)
+        screen = draw
         self.dead = False
         #被取代成滑鼠的圖片，已經convert完了
         self.image, self.rect = load_image()
         #把圖片轉成可以快速貼到螢幕上的形式
         self.image = self.image.convert_alpha()
-        self.for_blit = (self.rect.get_width()//2, self.rect.get_height//2)
+        self.size = (self.rect.[2]//2, self.rect.[3]//2)
         pygame.mouse.set_visible(False)
         #初始位置
         self.pos = "自己設定!!!!!!!!!!!!!!!!!!!!!!!!!"
+        self.last_pos = None
         pygame.mouse.set_pos([x, y])
-        screen.blit(self.image, (self.pos[0]-self.for_blit[0], self.pos[1]-self.for_blit[1]))
+        self.rect[0], self.rect[1] = self.pos[0]-self.size[0], self.pos[1]-self.size[1]
+        self.draw(screen)
+
+
         #設定玩家血量，然後顯示血條：調整到難易適中，還要再回來設定!!!!!!!!!
         self.blood = 150
         #長150寬20
@@ -78,34 +80,47 @@ class Player(pygame.sprite.Sprite):
         self.blood_surface.fill((255,0,0))
         self.empty_surface = pygame.Surface((150, 20))
         self.empty_surface.fill((255, 255, 255))
-        screen.blits(((self.empty_surface, ("放座標!!!!!")), (self.blood_surface, ("放座標!!!!!"))))
+        screen.blits(((self.empty_surface, (500, 150))), (self.blood_surface, (500, 150))))
         #然後玩家的初始設定大概差不多就結束了
         self.scream = load_sound("scream.wav")
+
+    def walk(Self):
+        self.pos = pygame.mouse.get_pos()
+        self.rect[0], self.rect[1] = self.pos[0]-self.size[0], self.pos[1]-self.size[1]
+        self.rect.move_ip(self.rect[0], self.rect[1])
+
+    def stepback(self):
+        Hua.move_ip(self.last_pos[0], self.last_pos[1])
+
     def recover(self):
         if self.blood <= 140:
             self.blood += 10
             self.blood_surface = pygame.Surface((self.blood, 20))
             self.blood_surface.fill((255,0,0))
-            screen.blits(((empty_surface, ("放座標")), (blood_surface, ("放座標"))))
+            screen.blits(((empty_surface, (500, 150)), (blood_surface, (500, 150))))
         else:
             self.blood = 150
             self.blood_surface = pygame.Surface((self.blood, 20))
             self.blood_surface.fill((255,0,0))
-            screen.blits(((empty_surface, ("放座標")), (blood_surface, ("放座標"))))
+            screen.blits(((empty_surface, (500, 150)), (blood_surface, (500, 150))))
 
 
-    def injure(self, times):
-        #等BTS設定好再來寫
-        self.scream.play()
+    def injure(self, times, play):
+        '''
+        這裡完成了!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        '''
+        if play:
+            self.scream.play()
         #血條減少(一次把兩個surface貼上去)
         #這裡要調整難度!!!!!!!!!!!!!!!!!現在可以被摸15次
-        self.blood -= 10*times
-        if self.blood > 0:
-            self.blood_surface = pygame.Surface((self.blood, 20))
-            self.blood_surface.fill((255,0,0))
-            screen.blits(((empty_surface, ("放座標")), (blood_surface, ("放座標"))))
-        else:
-            self.dead = True
+        for round in range(times):
+            self.blood -= 10
+            if self.blood > 0:
+                self.blood_surface = pygame.Surface((self.blood, 20))
+                self.blood_surface.fill((255,0,0))
+                screen.blits(((empty_surface, (500, 150)), (blood_surface, (500, 150))))
+            else:
+                self.dead = True
 
 
     def update(self):
@@ -125,59 +140,33 @@ class BTS(pygame.sprite.Sprite):
     移動模式可能要改一下(不是隨機移動，不然會像撞球，從哪邊碰到障礙物也很難判斷)
     '''
     
-    def __init__(self):
+    def __init__(self, draw = screen):
         pygame.sprite.Sprite.__init__(self)
-        self.image, self.rect = load_image()
-        self.pos = None
-        self.skill = None  #這裡是圖片或其他東西!!!!!!!!冰凍/石化/火焰
+        screen = draw
+        self.image, self.rect = None, None
+        self.x, self.y = None, None
+        self.last_pos = None
+        self.rect[0], self.rect[1] = self.pos[0], self.pos[1]
+        self.draw(screen)
+        self.skill = None 
+        self.dx, self.dy = None, None
 
-    def change_dir(lower, upper):    #再把下面的改一改!!!!!!!!!!!
-        direction = random.randint(lower, upper)
+    def stepback(self):
+        self.move_ip(self.last_pos[0], self.last_pos[1])
+
+    def change_dir():    
+        direction = random.randint(0, 360)
         radian = math.radians(direction)
-        dx = speed*math.cos(radian)
-        dy = speed*math.sin(radian)
-        return dx, dy
+        self.dx = speed*math.cos(radian)
+        self.dy = speed*math.sin(radian)
 
-    def walk(x, y, dx, dy):
-        x += dx
-        y += dy
-        self.rect.move_ip(x, y)
-        return x, y
-
-    def skill_n_talk(self):     
-
-
+    def walk(x = self.x, y = self.y, dx = self.dx, dy = self.dy):
+        self.x += self.dx
+        self.y += self.dy
+        self.rect.move_ip(self.x, self.y)
+        
     def update(self):
-        if 8 <= collide <= 11:    #碰到邊界(只換方向)   還有角落的部分
-            if collide == 8:   #上界
-                change_dir(180, 360)
-                walk(x, y, dx, dy)
-    
-            if collide == 9:  #下界
-                change_dir(0, 180)
-                walk(x, y, dx, dy)
-
-            elif collide == 10:   #左界   #支援同界角嗎?
-                change_dir(-90, 90)
-                walk(x, y, dx, dy)
-
-            else:  #右界
-                change_dir(90, 270)
-                walk(x, y, dx, dy)
-                #之後繼續寫
-            
-        if 1 <= collide <= 7 or collide == 14 or collide == 15:   #碰到BTS或NPC或隕石 #暫且是14和15!!!!!!!!!
-                change_dir(0, 360)
-                #之後繼續寫
-
-        if collide == 0:     #碰到玩家
-
-
-        if collide == -1:    #沒撞到甚麼
-            x += dx 
-            y += dy
-            self.rect.move_ip(x, y)
-
+        self.walk()
 
 
 
@@ -187,16 +176,18 @@ class NPC(pygame.sprite.Sprite):
     遇到邊界要後退
     遇到玩家或NPC不能疊上去
     '''
-    def __init__(self):
+    def __init__(self, draw = screen):
         pygame.sprite.Sprite.__init__(self)
+        screen = draw
         self.image, self.rect = load_image()
-        self.size = (self.image.get_width, self.image.get_height)
-        self.x, self.y = None, None #兩個NPC的初始位置不會重疊
-        self.speed = 3
+        self.size = (self.rect[2], self.rect[3])
+        self.x, self.y = None, None
+        speed = 3
         self.up = None
         self.down = None
         self.left = None
         self.right = None
+        self.prev = None
 
         self.healing = None
         self.healflag = False
@@ -205,67 +196,70 @@ class NPC(pygame.sprite.Sprite):
         self.alltalk = None
         
     def Up(self):
+        self.prev = self.up
         self.y += speed
         self.rect.move_ip(self.x, self.y)
     def Down(self):
+        self.prev = self.down
         self.y -= speed
         self.rect.move_ip(self.x, self.y)
     def Left(self):
+        self.prev = self.left
         self.x -= speed
         self.rect.move_ip(self.x, self.y)
     def Right(self):
+        self.prev = self.right
         self.x += speed
         self.rect.move_ip(self.x, self.y)
 
     def stepback(self):    
         '''
         碰到障礙物
-        這裡要再改!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        已經寫好啦!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         '''
-        if event1 == self.up:
+        if self.prev == self.up:
             self.y -= speed
             self.rect.move_ip(self.x, self.y)
-        elif event1 == self.down:
+        elif self.prev == self.down:
             self.y += speed
             self.rect.move_ip(self.x, self.y)
-        elif event1 == self.left:
+        elif self.prev == self.left:
             self.x += speed
             self.rect.move_ip(self.x, self.y)
-        elif event1 == self.right:
+        elif self.prev == self.right:
             self.x -= speed
             self.rect.move_ip(self.x, self.y)
         else:
             pass
     
-
-    def encounter_player(self):
-        '''
-        碰到玩家
-        '''
-        #建立計時器，維持幾秒
+'''
+    def trash_talk(self):
         
-        #記得回來改!!!!!!!!!!!!
-        #維持後要畫回原來的畫面!!!!!!!!!!!!!!
-
-        #先後退
-        self.stepback()
-        #對話的部分
-        #之後再來弄!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        talk_font = pygame.font.Font("game_material/font/HanaMinA.ttf", 12)
-        #從一群對話中隨機選出一句，對話放頭上(名字以上)，決定適當的距離!!!!!!!!!!
-        self.talk = self.alltalk[random.randint(0, len(self.alltalk)-1)]
-        #convert()：建立副本
-        self.talk = self.talk.convert()
-        #文字框根據對話的長度來決定
-        self.talk_bg = pygame.Surface((self.talk.get_width(), self.talk.get_height()))
-        screen.blits((self.talk_bg, (self.x, self.y + 10)), (self.talk, (self.x, self.y + 10)))
+        碰到玩家
+        講一些幹話
+        
+        class Talk(pygame.sprite.Sprite):
+            def __init__(self, talk):
+                pygame.sprite.Sprite.__init__(self)
+                #從一群對話中隨機選出一句，對話放頭上(名字以上)，決定適當的距離!!!!!!!!!!
+                self.talk = talk
+                #convert()：建立副本
+                self.talk = self.talk.convert()
+                #文字框根據對話的長度來決定
+                self.talk_bg = pygame.Surface((self.talk.get_width(), self.talk.get_height()))
+                self.talk_bg.fill((255, 255, 255))
+                self.talk_bg = self.talk_bg.convert()
+                self.talk_bg.blit(self.talk, (0, 0))
+                self.image, self.rect = self.talk_bg, 
+        #建立計時器，維持幾秒
+        #先這樣!!!!!!!!!!!!!!!!!!
+        random_talk = self.alltalk[random.randint(0, len(self.alltalk)-1)]
+        random_talk = pygame.sprite.GroupSingle(Talk(random_talk))
+        screen.blit((random_talk.talk_bg, (self.x, self.y + 10)))
         pygame.time.wait(5000)
-        #把原本的東西全部畫回去!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        #移除對話
+'''
 
-
-    def update(self):    
-                        
-    
     
 # below is writed by huahua207
 # ---------------------------------------------------------------
@@ -301,7 +295,7 @@ class MazeBarrier(pygame.sprite.Sprite):
 class Maze(pygame.sprite.Sprite):
 
     def __init__(self):
-        super().__init__()
+        super().__init__(self)
         self.image, self.rect = load_image("mars.jpg", "main_pic")
         # 如果load image, type 要怎麼處理？
 
@@ -327,7 +321,7 @@ class MazeGame:
             maze = np.zeros(len(lines)*unit, len(lines[0])*unit, 3) # (height, width, depth)
 
             # Initialize maze row by row
-            for row, linr in enumerate(lines):
+            for row, line in enumerate(lines):
                 for col, symbol in enumerate(line):
                     if symbol == '0': # 障礙物，loadimage進來
                         maze[row*unit:row*unit+unit, col*unit:col*unit+unit, :] = load_image("barrier.png", "main_pic")
