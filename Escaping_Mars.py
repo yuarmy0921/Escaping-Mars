@@ -270,17 +270,7 @@ class NPC(pygame.sprite.Sprite):
 # below is writed by huahua207
 # ---------------------------------------------------------------
 # load_image and load_sound have been writed by yuarmy.
-# now I have to cover the barriers class and border setting.
-
-#創建迷宮物件(這裡我幫你改一下喔!!!!!!!!迷宮還不是一整個視窗，它是視窗裡面的一個Surface物件)
-maze_obj = pygame.Surface((790,790))
-maze_obj = maze_obj.convert() #convert()建立副本，加快畫布在視窗顯示速度
-
-
-
-#background = load_image("mars.jpg") 就load不進來我也不知道為啥嗚嗚嗚嗚
-#background.convert()
-#screen.blit(background, (20,10))
+# now I have to cover the barriers class and border setting. 
 
 #創建字體對象
 myfont = pygame.font.Font(None, 40)
@@ -294,8 +284,8 @@ class MazeBarrier(pygame.sprite.Sprite):
         self.image = pygame.surfarray.make_surface(np.transpose(texture ,(1, 0, 2)))
         self.rect = pygame.Rect(position, self.texture.shape[:2])
         # 不太清楚這裡，我想要load image，texture到底是幹嘛用的
-    def fire(self): # 用collide去判斷有沒有撞到，有的畫就會觸發這個method
-        return
+    def fire(self):
+        
         
 # 底圖
 class Maze(pygame.sprite.Sprite):

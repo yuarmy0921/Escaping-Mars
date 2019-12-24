@@ -248,6 +248,8 @@ def main():
         #障礙物
         if len(pygame.sprite.spritecollide(Hua, barriers)) > 0:
             Hua.injure(len(pygame.sprite.spritecollide(Hua, barriers)))
+            # 我應該要知道這是撞到哪一個障礙物，用for
+            barrier.fire(Hua)
 
         #BTS
         if len(pygame.sprite.spritecollide(Hua, BTS_group)) > 0:
@@ -274,7 +276,8 @@ def main():
         if len(pygame.sprite.groupcollide(BTS_group, barriers)) > 0:
             for member in pygame.sprite.groupcollide(BTS_group, barriers):
                 #要後退!!!!!!!!
-                member
+                member.stepback()
+                barrier.fire(member)
 
         #NPC
         if len(pygame.sprite.groupcollide(NPC_group, BTS_group)) > 0:
@@ -290,6 +293,7 @@ def main():
         if len(pygame.sprite.groupcollide(NPC_group, barriers)) > 0:
             for member in pygame.sprite.groupcollide(NPC_group, barriers:
                 member.stepback()
+                barrier.fire(member)
         
         #------------------------------------------------------------------------------------------------------------------------------
         pygame.display.update()
