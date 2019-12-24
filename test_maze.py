@@ -1,5 +1,9 @@
 import pygame
 import os, sys
+import numpy as np
+from pygame.locals import *
+
+
 
 def load_image(name, prev, colorkey = None):
     '''
@@ -21,10 +25,10 @@ def load_image(name, prev, colorkey = None):
     #get_rect():把rect設定成圖片大小
     return image, image.get_rect()
 
+
 class MazeBarrier(pygame.sprite.Sprite):
     def __init__(self, position):
         super().__init__()
-        self.position = position
         self.image, self.rect = load_image("barrier.png", "main_pic")
 
     def fire(self):
@@ -39,7 +43,7 @@ class MazeBarrier(pygame.sprite.Sprite):
 class MazeGame:
 
     def __init__(self):
-        self.unit = 10
+        unit = 10
 
         # The following attributes will be initialized later
         self.maze = None
@@ -47,14 +51,12 @@ class MazeGame:
         self.exit_point = None
         #self.NPC = NPC()
         #self.BTS = BTS()
-
-        self.ground = load_image("mars.jpg", "main_pic")
        
         # Build Maze
         with open(("maze.txt"), "r") as f:
             # Reserve space for maze
-            lines = f.read().strip("\n"),split("\n") # Read the map
-            maze = np.zeros(len(lines)*unit, len(lines[0])*unit, 3) # (height, width, depth)
+            lines = f.read().strip("\n").split("\n") # Read the map
+            maze = np.zeros((len(lines)*unit, len(lines[0])*unit, 3)) # (height, width, depth)
 
             # Initialize maze row by row
             for row, line in enumerate(lines):
@@ -74,7 +76,7 @@ class MazeGame:
                         # 我想要做的是，這是在傳player位置，安捏干丟？？？？
                     elif symbol == 'F': # 終點
                         # 設成紅色
-                        maze[row*unit:row*unit+unit, col*unit:col*uit+unit, 0] = 255
+                        maze[row*unit:row*unit+unit, col*unit:col*unit+unit, 0] = 255
 
                         # Record the exit point
                         self.exit_point = (col*unit, row*unit)
@@ -84,4 +86,28 @@ class MazeGame:
         # Create groups
         self.barrier_group = pygame.sprite.Group(self.barriers)
 
-game = MazeGame()
+
+
+def main():
+    pygame.init()
+    screen = pygame.display.set_mode((1440, 800))
+    bg = load_image("mars.jpg", "main_pic")
+    screen.blit(bg[0], (0, 0))
+    game = MazeGame()
+    flag = False
+    while True:
+        for event in pygame.event.get():
+            if event.type == MOUSEBUTTONDOWN:
+                flag = True
+        if flag:
+            break
+    pygame.quit()
+
+main()
+
+# load numpy abd cv2
+# initialize maze
+# load image , iamread("檔案路徑")
+# resize image
+# assign resized image to 正確的 位置
+
