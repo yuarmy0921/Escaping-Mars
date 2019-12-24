@@ -3,6 +3,7 @@ import pygame
 import random 
 import math
 import os, sys
+import time
 from pygame.locals import *
 from pygame.compat import geterror
 #pygame.image.load()預設得到的type是surface
@@ -260,40 +261,24 @@ class NPC(pygame.sprite.Sprite):
         #移除對話
 '''
 
-    
-# below is writed by huahua207
-# ---------------------------------------------------------------
-# load_image and load_sound have been writed by yuarmy.
-# now I have to cover the barriers class and border setting. 
-
-#創建字體對象
-myfont = pygame.font.Font(None, 40)
-white = (255,255,255)
-
 class MazeBarrier(pygame.sprite.Sprite):
 
-    def __init__(self, position, texture):
+    def __init__(self, position):
         super().__init__()
-        self.texture = texture
-        self.image = pygame.surfarray.make_surface(np.transpose(texture ,(1, 0, 2)))
-        self.rect = pygame.Rect(position, self.texture.shape[:2])
-        # 不太清楚這裡，我想要load image，texture到底是幹嘛用的
+        self.image, self.rect = load_image("barrier.png", "main_pic")
     def fire(self):
-        
-        
-# 底圖
-class Maze(pygame.sprite.Sprite):
-
-    def __init__(self):
-        super().__init__(self)
-        self.image, self.rect = load_image("mars.jpg", "main_pic")
-        # 如果load image, type 要怎麼處理？
+        # 每一個障礙物都會燒起來！
+        # 原本的狀態先存起來，火燒完後再回來
+        ori_image, ori_rect = self.image, self.rect
+        self.image, self.rect = load_image("","main_pic")
+        time.sleep(0.5)
+        self.image, self.rect = ori_image, ori_rect
 
 # 遊戲最最初始值設定，主程式一定是要先跑這個，阿然後可能還要再call NPC and BTS
 class MazeGame:
 
     def __init__(self):
-        self.unit = 15
+        self.unit = 10
 
         # The following attributes will be initialized later
         self.maze = None
@@ -303,6 +288,7 @@ class MazeGame:
         self.NPC = NPC()
         self.BTS = BTS()
 
+        self.ground = load_image("mars.jpg", "main_pic")
        
         # Build Maze
         with open("maze.txt"), "r") as f:
@@ -313,11 +299,9 @@ class MazeGame:
             # Initialize maze row by row
             for row, line in enumerate(lines):
                 for col, symbol in enumerate(line):
-                    if symbol == '0': # 障礙物，loadimage進來
-                        maze[row*unit:row*unit+unit, col*unit:col*unit+unit, :] = load_image("barrier.png", "main_pic")
-                        
+                    if symbol == '0': # 障礙物
                         # Create barrier
-                        barrier = MazeBarrier((col*unit, row*unit), maze[row*unit:row*unit+unit, col*unit:col*unit+unit, :].copy())
+                        barrier = MazeBarrier((col*unit, row*unit))
                         self.barriers.append(barrier)
                     elif symbol == '1': # 路，不需要load image，用背景即可
                         pass
@@ -336,40 +320,6 @@ class MazeGame:
                         self.exit_point = (col*unit, row*unit)
                     else:
                         raise Exception("Invalid symbol in maze '%s'" % symbol)
-        # Save maze
-        self.maze = Maze((0,0),maze.copy())
 
         # Create groups
         self.barrier_group = pygame.sprite.Group(self.barriers)
-
-
-#畫東西
-pos_x = 300
-pos_y = 250
-while True:
-    for event in pygame.event.get():
-        if event.type in (QUIT, KEYDOWN):
-            sys.exit()
-        #創建文字
-        screen.fill((255,0,0))
-        textImage = myfont.render("Welcome to the Mars village.", True, white)
-        screen.blit(textImage,(100,100))
-
-        #畫矩形
-        color = 255, 190, 0
-        width = 0
-        pos = pos_x, pos_y, 100, 100
-        
-        pygame.draw.rect(screen,color,pos,width)
-        pygame.display.update()
-
-        #畫圓
-        yellow = 255,255,0
-        position = 100,250
-        radius = 100
-        width = 10
-        
-        pygame.draw.circle(screen, color, position, radius, width)
-        pygame.display.update()
-# ---------------------------------------------------------------------
-# above is writed bt huahua207

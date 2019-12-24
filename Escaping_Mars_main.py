@@ -129,8 +129,6 @@ def main():
             break
 #-------------------------------------------------------------------------------------------------------------
     #這是遊戲主要部分!!!!!!!!!!!!!!
-    #先貼背景圖
-    #然後匯入迷宮
     # 重點：所有只出現一段時間的surface都要移除!!!!!!!!!!!!!!
     Game = MazeGame()
     #--這裡是人物設定的部分--------------------------------------------------------------------------------------------------------
@@ -256,17 +254,11 @@ def main():
 
         #玩家碰撞到東西
         #先後退
-        Hua.stepback()
         #障礙物
-<<<<<<< HEAD
         if len(pygame.sprite.spritecollide(Hua, barriers)) > 0:
+            Hua.stepback()
             Hua.injure(len(pygame.sprite.spritecollide(Hua, barriers)))
-            # 我應該要知道這是撞到哪一個障礙物，用for
-            barrier.fire(Hua)
-=======
-        if len(pygame.sprite.spritecollide(Hua, barriers, False)) > 0:
-            Hua.injure(len(pygame.sprite.spritecollide(Hua, barriers, False)))
->>>>>>> f7c20e4dc950eeb40ffc9f84538bf40070556d45
+            barriers.fire(Hua)
 
         #BTS
         #放技能
@@ -352,18 +344,10 @@ def main():
 
 
         #障礙物
-<<<<<<< HEAD
-        if len(pygame.sprite.groupcollide(BTS_group, barriers)) > 0:
-            for member in pygame.sprite.groupcollide(BTS_group, barriers):
-                #要後退!!!!!!!!
-                member.stepback()
-                barrier.fire(member)
-=======
         if len(pygame.sprite.groupcollide(BTS_group, barriers, False)) > 0:
             for member in pygame.sprite.groupcollide(BTS_group, barriers, False):
                 member.stepback()
                 member.change_dir()
->>>>>>> f7c20e4dc950eeb40ffc9f84538bf40070556d45
 
         #NPC
         if len(pygame.sprite.groupcollide(NPC_group, BTS_group, False)) > 0:
@@ -379,7 +363,6 @@ def main():
         if len(pygame.sprite.groupcollide(NPC_group, barriers, False)) > 0:
             for member in pygame.sprite.groupcollide(NPC_group, barriers, False):
                 member.stepback()
-                barrier.fire(member)
         
 
         #########儲存上一個位置：判斷後退
