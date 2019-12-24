@@ -278,6 +278,14 @@ class MazeBarrier(pygame.sprite.Sprite):
         time.sleep(0.5)
         self.image, self.rect = ori_image, ori_rect
 
+class Maze(pygame.sprite.Sprite):
+
+    def __init__(self, position, texture):
+        super.__init__()
+        self.texture = texture
+        self.image = pygame.surfarray.make_surface(np.transpose(texture,(1,0,2)))
+        self.rect = pygame.Rect(position, self.texture.shape[:2])
+
 # 遊戲最最初始值設定，主程式一定是要先跑這個，阿然後可能還要再call NPC and BTS
 class MazeGame:
 
@@ -288,6 +296,7 @@ class MazeGame:
         self.maze = None
         self.barriers = []
         self.exit_point = None
+        self.player = None
         self.NPC = NPC()
         self.BTS = BTS()
 

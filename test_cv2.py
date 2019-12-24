@@ -9,7 +9,7 @@ import numpy as np
 import cv2
 
 # 開一個這樣的視窗，只有最一開始需要
-# canvas = np.zeros((600, 800, 3))
+canvas = np.zeros((600, 800, 3))
 image = cv2.imread("./test.jpg")
 resize_image = cv2.resize(image, (100, 100))
 x, y = 300-100, 400-100

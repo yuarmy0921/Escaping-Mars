@@ -1,49 +1,30 @@
-import pygame
-import os, sys
+import pygame, os, sys
+import cv2
 import numpy as np
 from pygame.locals import *
 
-
-
-def load_image(name, prev, colorkey = None):
-    '''
-    把圖片載下來
-    '''
-    fullname = os.path.join('game_material/'+prev+"/", name)
-    try:
-        #pygame.image.load(圖片檔案路徑)
-        image = pygame.image.load(fullname)
-    except pygame.error as message:
-        print('Cannot load image: ', name)
-        raise SystemExit(message)
-    #把圖片轉換成最適合呈現的樣子
-    image = image.convert()
-    if colorkey is not True:
-        if colorkey is -1:
-            colorkey = image.get_at((0, 0))
-        image.set_colorkey(colorkey, RLEACCEL)
-    #get_rect():把rect設定成圖片大小
-    return image, image.get_rect()
-
-
 class MazeBarrier(pygame.sprite.Sprite):
-    def __init__(self, position):
+
+    def __init__(self, position, row, col, unit, maze): # position是傳進行與列
         super().__init__()
-        self.image, self.rect = load_image("barrier.png", "main_pic")
+        barrier_image = cv2.imread("./game_material/main_pic/barrier.png")
+        barrier_image = cv2.resize(barrier_image, (unit, unit))
+        maze[row*unit:row*unit+unit, col*unit:col*unit+unit, :] = barrier_image
+        self.image = pygame.surfarray.make_surface(np.transpose(barrier_image ,(1,0,2)))
+        self.rect = pygame.Rect(position, barrier_image.shape[:2])
 
-    def fire(self):
-        # 每一個障礙物都會燒起來！
-        # 原本的狀態先存起來，火燒完後再回來
-        ori_image, ori_rect = self.image, self.rect
-        self.image, self.rect = load_image("","main_pic")
-        time.sleep(0.5)
-        self.image, self.rect = ori_image, ori_rect
+class Maze(pygame.sprite.Sprite):
 
-# 遊戲最最初始值設定，主程式一定是要先跑這個，阿然後可能還要再call NPC and BTS
+    def __init__(self, position, texture):
+        super().__init__()
+        self.texture = texture
+        self.image = pygame.surfarray.make_surface(np.transpose(texture, (1,0,2)))
+        self.rect = pygame.Rect(position,self.texture.shape[:2])
+
 class MazeGame:
 
     def __init__(self):
-        unit = 10
+        unit = 15
 
         # The following attributes will be initialized later
         self.maze = None
@@ -56,33 +37,42 @@ class MazeGame:
         with open(("maze.txt"), "r") as f:
             # Reserve space for maze
             lines = f.read().strip("\n").split("\n") # Read the map
-            maze = np.zeros((len(lines)*unit, len(lines[0])*unit, 3)) # (height, width, depth)
+            maze = np.zeros((800, 1440, 3))
+
+            # resize bg
+            bg = cv2.imread("./game_material/main_pic/mars.jpg")
+            bg = cv2.resize(bg, (1140, 650))
+            maze[0:650, 0:1140, :] = bg
+            # 左上角：(150, 75)
 
             # Initialize maze row by row
             for row, line in enumerate(lines):
                 for col, symbol in enumerate(line):
                     if symbol == '0': # 障礙物
                         # Create barrier
-                        barrier = MazeBarrier((col*unit, row*unit))
+                        barrier = MazeBarrier((col*unit, row*unit),row,col,unit,maze)
                         self.barriers.append(barrier)
                     elif symbol == '1': # 路，不需要load image，用背景即可
                         pass
-                    elif symbol == 'S': # 起點，call player_class
-                        # 有要set color 嗎？沒有就pass下面那個
-                        maze[row*unit:row*unit+unit, col*unit:col*unit+unit, 0] = 255
+                    elif symbol == 'S': # 起點
+                        # 設成白色
+                        maze[row*unit:row*unit+unit, col*unit:col*unit+unit, :] = 255
 
                         # Create player
                         #self.player = Player((col*unit, row*unit))
                         # 我想要做的是，這是在傳player位置，安捏干丟？？？？
                     elif symbol == 'F': # 終點
-                        # 設成紅色
-                        maze[row*unit:row*unit+unit, col*unit:col*unit+unit, 0] = 255
+                        # 設成白色
+                        maze[row*unit:row*unit+unit, col*unit:col*unit+unit, :] = 255
+                        print("Yeah！！！！！")
 
                         # Record the exit point
                         self.exit_point = (col*unit, row*unit)
                     else:
                         raise Exception("Invalid symbol in maze '%s'" % symbol)
-
+        # Save maze
+        self.maze = Maze((75, 150), maze.copy())
+        
         # Create groups
         self.barrier_group = pygame.sprite.Group(self.barriers)
 
@@ -90,20 +80,28 @@ class MazeGame:
 
 def main():
     pygame.init()
-    screen = pygame.display.set_mode((1440, 800))
-    bg = load_image("mars.jpg", "main_pic")
-    screen.blit(bg[0], (0, 0))
     game = MazeGame()
-    flag = False
-    while True:
+    screen = pygame.display.set_mode(game.maze.image.get_size())
+    screen.blit(game.maze.image, game.maze.rect)
+    print("finish！")
+    quit_flag = False
+    while not quit_flag:
         for event in pygame.event.get():
-            if event.type == MOUSEBUTTONDOWN:
-                flag = True
-        if flag:
+            if event.type == pygame.KEYDOWN:
+                quit_flag = True
+        if quit_flag:
             break
-    pygame.quit()
 
 main()
+
+"""
+問題
+1. 為什麼是藍色系XD
+2. height and width 在nparray跟cv2再畫上去的不同，搞不清楚
+3. could not broadcast input array from shape (15,15,3) into shape (30,15,3)
+   這個是發生什麼事，在line_12
+   調位置整個都不太懂
+"""
 
 # load numpy abd cv2
 # initialize maze
