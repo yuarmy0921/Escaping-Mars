@@ -58,12 +58,13 @@ def main():
     #--------------------------------------------------------------------------------------------------------------------
     #問題：去背圖檔colorkey的設定!!!!!!!!!!!!!!!!!!!!!!!!
     pygame.init()
-    pygame.mixer.init(channels = 6)
     #pygame.font.init()
     #pygame.display.init()
+    pygame.mixer.init(channels = 6)
     screen_size = (1440, 800)
     screen = pygame.display.set_mode(screen_size)
     pygame.display.set_caption("Escaping Mars")
+    quit_flag = False
 #---------------------------------------------------------------------------------------------------------------
     #這是初始畫面
     #while前面是設定的部分
