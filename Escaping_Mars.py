@@ -2,6 +2,7 @@
 import pygame
 import random 
 import math
+import numpy as np
 import os, sys
 import time
 from pygame.locals import *
@@ -71,6 +72,7 @@ class Player(pygame.sprite.Sprite):
         #初始位置
         self.pos = "自己設定!!!!!!!!!!!!!!!!!!!!!!!!!"
         self.last_pos = None
+        self.dx, self.dy = None, None
         pygame.mouse.set_pos([x, y])
         self.rect[0], self.rect[1] = self.pos[0]-self.size[0], self.pos[1]-self.size[1]
         self.draw(screen)
@@ -89,8 +91,10 @@ class Player(pygame.sprite.Sprite):
 
     def walk(self):
         self.pos = pygame.mouse.get_pos()
-        self.rect[0], self.rect[1] = self.pos[0]-self.size[0], self.pos[1]-self.size[1]
-        self.rect.move_ip(self.rect[0], self.rect[1])
+        self.dx, self.dy = self.pos[0]-self.last_pos[0]-self.size[0], self.pos[1]-self.last_pos[1]-self.size[1]
+        #把原本東西補回去
+
+        self.rect.move_ip(self.dx, self.dy)
 
     def stepback(self):
         Hua.move_ip(self.last_pos[0], self.last_pos[1])
@@ -125,15 +129,6 @@ class Player(pygame.sprite.Sprite):
             else:
                 self.dead = True
 
-
-    def update(self):
-        #玩家狀態
-        
-        self.pos = pygame.mouse.get_pos()
-        #這裡是在幹嘛???????????????
-        self.rect.mid = pos
-
-
     
 class BTS(pygame.sprite.Sprite):
     '''
@@ -147,15 +142,21 @@ class BTS(pygame.sprite.Sprite):
         pygame.sprite.Sprite.__init__(self)
         screen = draw
         self.image, self.rect = None, None
-        self.x, self.y = None, None
-        self.last_pos = None
+        self.save_surf = None
+        self.save_image = None
+        self.dx, self.dy = None, None
+        speed = 3
         self.rect[0], self.rect[1] = self.pos[0], self.pos[1]
         self.draw(screen)
         self.skill = None 
-        self.dx, self.dy = None, None
+        
 
     def stepback(self):
-        self.move_ip(self.last_pos[0], self.last_pos[1])
+        #先儲存上一個位置的影像!!!!!!!!!!!!!!!!
+        #創造出一個新的surface物件傳入!!!!!!!!!!!!!!!!
+        self.save_surf = 
+        self.save_image = 
+        self.move_ip(-self.dx, -self.dy)
 
     def change_dir(self):    
         direction = random.randint(0, 360)
@@ -164,10 +165,7 @@ class BTS(pygame.sprite.Sprite):
         self.dy = speed*math.sin(radian)
 
     def walk(self,x, y, dx, dy):
-        self.x, self.y, self.dx, self.dy = x, y, dx, dy
-        self.x += self.dx
-        self.y += self.dy
-        self.rect.move_ip(self.x, self.y)
+        self.rect.move_ip(self.dx, self.dy)
         
     def update(self):
         self.walk()
@@ -184,13 +182,14 @@ class NPC(pygame.sprite.Sprite):
         pygame.sprite.Sprite.__init__(self)
         screen = draw
         self.image, self.rect = load_image()
+        self.save_image = None
         self.size = (self.rect[2], self.rect[3])
-        self.x, self.y = None, None
         speed = 3
         self.up = None
         self.down = None
         self.left = None
         self.right = None
+        #上一個按下的按鍵
         self.prev = None
 
         self.healing = None
@@ -201,20 +200,16 @@ class NPC(pygame.sprite.Sprite):
         
     def Up(self):
         self.prev = self.up
-        self.y += speed
-        self.rect.move_ip(self.x, self.y)
+        self.rect.move_ip(0, -speed)
     def Down(self):
         self.prev = self.down
-        self.y -= speed
-        self.rect.move_ip(self.x, self.y)
+        self.rect.move_ip(0, speed)
     def Left(self):
         self.prev = self.left
-        self.x -= speed
-        self.rect.move_ip(self.x, self.y)
+        self.rect.move_ip(-speed, 0)
     def Right(self):
         self.prev = self.right
-        self.x += speed
-        self.rect.move_ip(self.x, self.y)
+        self.rect.move_ip(speed, 0)
 
     def stepback(self):    
         '''
@@ -222,17 +217,13 @@ class NPC(pygame.sprite.Sprite):
         已經寫好啦!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         '''
         if self.prev == self.up:
-            self.y -= speed
-            self.rect.move_ip(self.x, self.y)
+            self.rect.move_ip(0, speed)
         elif self.prev == self.down:
-            self.y += speed
-            self.rect.move_ip(self.x, self.y)
+            self.rect.move_ip(0, -speed)
         elif self.prev == self.left:
-            self.x += speed
-            self.rect.move_ip(self.x, self.y)
+            self.rect.move_ip(speed, 0)
         elif self.prev == self.right:
-            self.x -= speed
-            self.rect.move_ip(self.x, self.y)
+            self.rect.move_ip(-speed, 0)
         else:
             pass
     

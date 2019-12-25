@@ -50,7 +50,7 @@ def main():
     #記得回來改字體大小!!!!!!!!!!
     next = False
     subcaption_font = pygame.font.Font("game_material/font/NIGHTMARE/Nightmare.ttf", 100)
-    story_font = pygame.font.Font("game_material/font/HanaMin/HanaMinA.ttf", 100)
+    story_font = pygame.font.Font("game_material/font/HanaMin/HanaMinA.ttf", 30)
 
     subcaption = subcaption_font.render("Story", True, (255, 255, 255))
     story_line1 = story_font.render("    你是火星村的村長，某一天不知道發生甚麼事，火星村", True, (255, 255, 255))
@@ -214,7 +214,7 @@ def main():
         # NPC的情況
         for event in pygame.event.get():
             if event.type==pygame.QUIT :
-            pygame.quit()
+                pygame.quit()
             if event.type == KEYDOWN:
                 # 這裡是大麥控制
                 if event == BigMac.up:
@@ -367,28 +367,31 @@ def main():
                 member.stepback()
         
 
-        #########儲存上一個位置：判斷後退
+        #########儲存上一個位置：判斷後退和移動
         Hua.last_pos = pygame.mouse.get_pos()
         self.last_pos = (self.rect[0], self.rect[1])
         #------------------------------------------------------------------------------------------------------------------------------
         pygame.display.update()
         #判斷死了沒
         if Hua.dead:
+            cry = load_sound("cry.wav")
             success_flag = False
             fail_flag = True
             #先關背景音樂
             main_bgm.stop()
-
-
+            cry.play()
+            pygame.time.wait(5000)
             break
 
         #判斷過關
         if :
+            applause = load_sound("applause.wav")
             success_flag = True
             fail_flag = False
             #先關背景音樂
             main_bgm.stop()
-
+            applause.play()
+            pygame.time.wait(5000)
             break
     
 
