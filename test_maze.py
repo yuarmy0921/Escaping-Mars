@@ -64,7 +64,6 @@ class MazeGame:
                     elif symbol == 'F': # 終點
                         # 設成白色
                         maze[row*unit:row*unit+unit, col*unit:col*unit+unit, :] = 255
-                        print("Yeah！！！！！")
 
                         # Record the exit point
                         self.exit_point = (col*unit, row*unit)
@@ -83,7 +82,6 @@ def main():
     game = MazeGame()
     screen = pygame.display.set_mode(game.maze.image.get_size())
     screen.blit(game.maze.image, game.maze.rect)
-    print("finish！")
     quit_flag = False
     while not quit_flag:
         for event in pygame.event.get():
