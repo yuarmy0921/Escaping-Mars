@@ -11,7 +11,9 @@ import cv2
 # 開一個這樣的視窗，只有最一開始需要
 canvas = np.zeros((600, 800, 3))
 image = cv2.imread("./test.jpg")
+print(image.shape)
 resize_image = cv2.resize(image, (100, 100))
+print(resize_image.shape)
 x, y = 300-100, 400-100
 canvas[x:x+100, y:y+100, :] = resize_image
 print(resize_image)
