@@ -5,6 +5,7 @@ import math
 import numpy as np
 import os, sys
 import time
+import cv2
 from pygame.locals import *
 from pygame.compat import geterror
 #pygame.image.load()預設得到的type是surface
@@ -45,8 +46,6 @@ def load_sound(name):
         print('Cannot load a sound: ', name)
         raise SystemExit(message)
     return sound
-
-screen = pygame.display.set_mode((1440, 800))
 
 #玩家
 class Player(pygame.sprite.Sprite):
