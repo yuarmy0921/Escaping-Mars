@@ -67,15 +67,15 @@ class Player(pygame.sprite.Sprite):
         self.image, self.rect = load_image("huahua.png","main_pic")
         #把圖片轉成可以快速貼到螢幕上的形式
         self.image = self.image.convert_alpha()
-        self.size = (self.rect[2]//2, self.rect[3]//2)
+        self.size_half= (self.rect[2]//2, self.rect[3]//2)
         pygame.mouse.set_visible(False)
         #初始位置
         self.pos = "自己設定!!!!!!!!!!!!!!!!!!!!!!!!!"
         self.last_pos = None
         self.dx, self.dy = None, None
+        self.save_rect = None
         pygame.mouse.set_pos([x, y])
-        self.rect[0], self.rect[1] = self.pos[0]-self.size[0], self.pos[1]-self.size[1]
-        self.draw(screen)
+        self.rect[0], self.rect[1] = self.pos[0]-self.size_half[0], self.pos[1]-self.size_half[1]
 
 
         #設定玩家血量，然後顯示血條：調整到難易適中，還要再回來設定!!!!!!!!!
@@ -85,16 +85,29 @@ class Player(pygame.sprite.Sprite):
         self.blood_surface.fill((255,0,0))
         self.empty_surface = pygame.Surface((150, 20))
         self.empty_surface.fill((255, 255, 255))
-        screen.blits(((self.empty_surface, (500, 150))), (self.blood_surface, (500, 150)))
         #然後玩家的初始設定大概差不多就結束了
         self.scream = load_sound("scream.wav")
 
     def walk(self):
         self.pos = pygame.mouse.get_pos()
-        self.dx, self.dy = self.pos[0]-self.last_pos[0]-self.size[0], self.pos[1]-self.last_pos[1]-self.size[1]
-        #把原本東西補回去
-
+        self.dx, self.dy = self.pos[0]-self.last_pos[0]-self.size_half[0], self.pos[1]-self.last_pos[1]-self.size_half[1]
         self.rect.move_ip(self.dx, self.dy)
+        '''
+        #計算位置更新前後座標的大小
+        #往哪邊移
+        #左上
+        if self.rect[0] < self.last_pos[0] and self.rect[1] < self.last_pos[1]:
+            self.save_rect = pygame.Rect(self.rect[0], self.rect[1], self.rect[2]+abs(self.dx), self.rect[3]+abs(self.dy))
+        #左下
+        if self.rect[0] < self.last_pos[0] and self.rect[1] > self.last_pos[1]:
+            self.save_rect = pygame.Rect(self.rect[0], self.last_pos[1], self.rect[2]+abs(self.dx), self.rect[3]+abs(self.dy))
+        #右上
+        if self.rect[0] > self.last_pos[0] and self.rect[1] < self.last_pos[1]:
+            self.save_rect = pygame.Rect(self.last_pos[0], self.rect[1], self.rect[2]+abs(self.dx), self.rect[3]+abs(self.dy))
+        #右下
+        if self.rect[0] > self.last_pos[0] and self.rect[1] > self.last_pos[1]:
+            self.save_rect = pygame.Rect(self.last_pos[0], self.last_pos[1], self.rect[2]+abs(self.dx), self.rect[3]+abs(self.dy))
+        '''
 
     def stepback(self):
         Hua.move_ip(self.last_pos[0], self.last_pos[1])
@@ -104,12 +117,10 @@ class Player(pygame.sprite.Sprite):
             self.blood += 10
             self.blood_surface = pygame.Surface((self.blood, 20))
             self.blood_surface.fill((255,0,0))
-            screen.blits(((empty_surface, (500, 150)), (blood_surface, (500, 150))))
         else:
             self.blood = 150
             self.blood_surface = pygame.Surface((self.blood, 20))
             self.blood_surface.fill((255,0,0))
-            screen.blits(((empty_surface, (500, 150)), (blood_surface, (500, 150))))
 
 
     def injure(self, times, play):
@@ -125,10 +136,15 @@ class Player(pygame.sprite.Sprite):
             if self.blood > 0:
                 self.blood_surface = pygame.Surface((self.blood, 20))
                 self.blood_surface.fill((255,0,0))
-                screen.blits(((empty_surface, (500, 150)), (blood_surface, (500, 150))))
+                
             else:
                 self.dead = True
-
+    def update(self):
+        #把所有東西都畫上去
+        #人的部分
+        self.draw(screen)
+        #血條的部分
+        screen.blits(((empty_surface, (500, 150)), (blood_surface, (500, 150))))
     
 class BTS(pygame.sprite.Sprite):
     '''
@@ -149,13 +165,10 @@ class BTS(pygame.sprite.Sprite):
         self.rect[0], self.rect[1] = self.pos[0], self.pos[1]
         self.draw(screen)
         self.skill = None 
+        self.skill_flag = False
         
 
     def stepback(self):
-        #先儲存上一個位置的影像!!!!!!!!!!!!!!!!
-        #創造出一個新的surface物件傳入!!!!!!!!!!!!!!!!
-        self.save_surf = 
-        self.save_image = 
         self.move_ip(-self.dx, -self.dy)
 
     def change_dir(self):    
@@ -168,7 +181,7 @@ class BTS(pygame.sprite.Sprite):
         self.rect.move_ip(self.dx, self.dy)
         
     def update(self):
-        self.walk()
+        self.draw(screen)
 
 
 
@@ -254,6 +267,8 @@ class NPC(pygame.sprite.Sprite):
         pygame.time.wait(5000)
         #移除對話
 '''
+    def update(self):
+        self.draw(screen)
 
 class MazeBarrier(pygame.sprite.Sprite):
 
@@ -278,7 +293,7 @@ class Maze(pygame.sprite.Sprite):
         self.rect = pygame.Rect(position, self.texture.shape[:2])
 
 # 遊戲最最初始值設定，主程式一定是要先跑這個，阿然後可能還要再call NPC and BTS
-class MazeGame:
+class MazeGame(Player, NPC, BTS):
 
     def __init__(self):
         self.unit = 10
@@ -287,9 +302,6 @@ class MazeGame:
         self.maze = None
         self.barriers = []
         self.exit_point = None
-        self.player = None
-        self.NPC = NPC()
-        self.BTS = BTS()
 
        
         # Build Maze

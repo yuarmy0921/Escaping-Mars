@@ -246,7 +246,8 @@ def main():
             #if event.type == MOUSEBUTTONDOWN:
 
         #寶貝移動的情況
-        BTS_group.update()
+        for member in BTS_group:
+            member.walk()
 
         #這裡都在判斷碰撞 !!!!!!!!!!!!!!!!!--------------------------------------------------------------------------------------
         #碰撞的情形
@@ -308,7 +309,7 @@ def main():
                 elif member == V:
                     #瞬移
                     member.stepback()
-                    Hua.move_ip("起點座標'!!!!!!!")
+                    Hua.rect[0], Hua.rect[1] = ("起點座標'!!!!!!!")
 
                 elif member == Jungkook:
                     #單純的小孩
@@ -370,6 +371,11 @@ def main():
         #########儲存上一個位置：判斷後退和移動
         Hua.last_pos = pygame.mouse.get_pos()
         self.last_pos = (self.rect[0], self.rect[1])
+
+        #貼上
+        Hua.update()
+        BTS_group.update()
+        NPC_group.update()
         #------------------------------------------------------------------------------------------------------------------------------
         pygame.display.update()
         #判斷死了沒
@@ -383,7 +389,7 @@ def main():
             pygame.time.wait(5000)
             break
 
-        #判斷過關
+        #判斷過關!!!!!!!!!!!!!!!!!!!!!!!!!!!
         if :
             applause = load_sound("applause.wav")
             success_flag = True
