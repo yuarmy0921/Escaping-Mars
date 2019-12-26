@@ -57,26 +57,29 @@ class Player(pygame.sprite.Sprite):
     只有玩家用pos，其他都用x y
     rect吃四個參數(左上角x座標, 左上角y座標, 長, 寬)
     '''
-    def __init__(self, draw = screen):
+    def __init__(self):
         pygame.sprite.Sprite.__init__(self)
-        screen = draw
+        self.screen = None
         self.dead = False
         #被取代成滑鼠的圖片，已經convert完了
         # 回來改圖片！不要讓你家寶貝變成barrier！他會哭！QQ
-        self.image, self.rect = load_image("huahua.png","main_pic")
+        self.image, self.rect = pygame.surface.Surface((10, 10)), pygame.Rect((10, 10), (10, 10))
+        self.image.fill((0, 0, 0))
         #把圖片轉成可以快速貼到螢幕上的形式
         self.image = self.image.convert_alpha()
         self.size_half= (self.rect[2]//2, self.rect[3]//2)
         pygame.mouse.set_visible(False)
         #初始位置
         #因為是滑鼠所以要這樣用
-        self.pos = "自己設定!!!!!!!!!!!!!!!!!!!!!!!!!"
-        self.last_pos = None
+        self.pos = (300, 500)
+        self.last_pos = (300, 500)
         self.dx, self.dy = None, None
-        pygame.mouse.set_pos([x, y])
+        pygame.mouse.set_pos([self.pos[0], self.pos[1]])
         self.rect[0], self.rect[1] = self.pos[0]-self.size_half[0], self.pos[1]-self.size_half[1]
+        
 
-
+        life_font = pygame.font.Font("game_material/font/Conserta/Conserta.ttf", 40)
+        self.life = life_font.render("LIFE", True, (184, 112, 112))
         #設定玩家血量，然後顯示血條：調整到難易適中，還要再回來設定!!!!!!!!!
         self.blood = 150
         #長150寬20
@@ -109,7 +112,7 @@ class Player(pygame.sprite.Sprite):
         '''
 
     def stepback(self):
-        Hua.move_ip(self.last_pos[0], self.last_pos[1])
+        self.move_ip(self.last_pos[0], self.last_pos[1])
 
     def recover(self):
         if self.blood <= 140:
@@ -142,9 +145,9 @@ class Player(pygame.sprite.Sprite):
     def update(self):
         #把所有東西都畫上去
         #人的部分
-        self.draw(screen)
+        self.screen.blit(self.image, self.rect)
         #血條的部分
-        screen.blits(((empty_surface, (500, 150)), (blood_surface, (500, 150))))
+        self.screen.blits(((self.life, (330, 35)), (empty_surface, (400, 50)), (blood_surface, (400, 50))))
     
 class BTS(pygame.sprite.Sprite):
     '''
@@ -154,16 +157,14 @@ class BTS(pygame.sprite.Sprite):
     移動模式可能要改一下(不是隨機移動，不然會像撞球，從哪邊碰到障礙物也很難判斷)
     '''
     
-    def __init__(self, draw = screen):
+    def __init__(self):
         pygame.sprite.Sprite.__init__(self)
-        screen = draw
-        self.image, self.rect = None, None
+        self.screen = pygame.Surface((10, 10))
+        self.image, self.rect = pygame.surface.Surface((10, 10)), pygame.Rect(0, 0, 10, 10)
         self.save_surf = None
         self.save_image = None
-        self.dx, self.dy = None, None
+        self.dx, self.dy = 3, 3
         speed = 3
-        self.rect[0], self.rect[1] = self.pos[0], self.pos[1]
-        self.draw(screen)
         self.skill = None 
         #要再建立維持技能的計時器!!!!!!!!
         #貼上特效再受傷!!!!!!!!!!!!!!!!!!
@@ -181,11 +182,11 @@ class BTS(pygame.sprite.Sprite):
         self.dx = speed*math.cos(radian)
         self.dy = speed*math.sin(radian)
 
-    def walk(self,x, y, dx, dy):
+    def walk(self):
         self.rect.move_ip(self.dx, self.dy)
         
     def update(self):
-        self.draw(screen)
+        self.screen.blit(self.image, self.rect)
 
 
 
@@ -195,10 +196,10 @@ class NPC(pygame.sprite.Sprite):
     遇到邊界要後退
     遇到玩家或NPC不能疊上去
     '''
-    def __init__(self, draw = screen):
+    def __init__(self):
         pygame.sprite.Sprite.__init__(self)
-        screen = draw
-        self.image, self.rect = None, None
+        self.screen = None
+        self.image, self.rect = pygame.surface.Surface((10, 10)), pygame.Rect(0, 0, 10, 10)
         self.save_image = None
         self.size = (self.rect[2], self.rect[3])
         speed = 3
@@ -244,7 +245,7 @@ class NPC(pygame.sprite.Sprite):
         else:
             pass
     
-'''
+    '''
     def trash_talk(self):
         
         碰到玩家
@@ -270,9 +271,9 @@ class NPC(pygame.sprite.Sprite):
         screen.blit((random_talk.talk_bg, (self.x, self.y + 10)))
         pygame.time.wait(5000)
         #移除對話
-'''
+    '''
     def update(self):
-        self.draw(screen)
+        self.screen.blit(self.image, self.rect)
 
 class MazeBarrier(pygame.sprite.Sprite):
 
@@ -301,7 +302,7 @@ class Maze(pygame.sprite.Sprite):
         self.image = pygame.surfarray.make_surface(np.transpose(texture, (1,0,2)))
         self.rect = pygame.Rect(position,self.texture.shape[:2])
 
-class MazeGame(Player, NPC, BTS):
+class MazeGame:
 
     def __init__(self):
         unit = 15
@@ -309,6 +310,16 @@ class MazeGame(Player, NPC, BTS):
         maze_width, maze_height = 1140, 650
 
         # The following attributes will be initialized later
+        self.player = Player()
+        self.npc1 = NPC()
+        self.npc2 = NPC()
+        self.bts1 = BTS()
+        self.bts2 = BTS()
+        self.bts3 = BTS()
+        self.bts4 = BTS()
+        self.bts5 = BTS()
+        self.bts6 = BTS()
+        self.bts7 = BTS()
         self.maze = None
         self.barriers = []
         self.exit_point = None

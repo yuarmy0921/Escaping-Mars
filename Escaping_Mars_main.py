@@ -136,13 +136,13 @@ def main():
     Hua = Game.Player()
 
     RM = Game.BTS()   #破壞
-    RM.image, RM.rect = load_image("koya.jpg", "main_pic")
+    RM.image, RM.rect = load_image("koya.png", "main_pic")
     RM.rect[0], RM.rect[1] = 390, 400
     RM.skill = "Dumb: damage"
     RM.sound_flag = True
 
     Jin = Game.BTS()   #冰凍
-    Jin.image, Jin.rect = load_image("rj.jpg", "main_pic")
+    Jin.image, Jin.rect = load_image("rj.png", "main_pic")
     Jin.rect[0], Jin.rect[1] = 460, 420
     Jin.skill = load_image("ice.png", "main_pic")
 
@@ -152,7 +152,7 @@ def main():
     Suga.skill = load_image("stone.png", "main_pic")
 
     J_hope = Game.BTS()   #融化
-    J_hope.image, J_hope.rect = load_image("mang.jpg", "main_pic")
+    J_hope.image, J_hope.rect = load_image("mang.png", "main_pic")
     J_hope.rect[0], J-hope.rect[1] = 440, 530
     J-hope.skill = load_image("flame.png", "main_pic")
     J_hope.sound_flag = True
@@ -163,20 +163,20 @@ def main():
     Jimin.skill = False
 
     V = Game.BTS()    #迷路
-    V.image, V.rect = load_image("tata.jpg", "main_pic")
+    V.image, V.rect = load_image("tata.png", "main_pic")
     V.rect[0], V.rect[1] = 300 ,500
     V.skill = "Dumb: shift"
     V.sound_flag = True
 
     Jungkook = Game.BTS()   #嗜睡
-    Jungkook.image, Jungkook.rect = load_image("cooky.jpg", "main_pic")
+    Jungkook.image, Jungkook.rect = load_image("cooky.png", "main_pic")
     Jungkook.rect[0], Jung.rect[1] = 310, 420
     Jungkook.sound_flag = True
 
     BigMac = Game.NPC()
     #初始位置
     #350 480
-    BigMac.image, BigMac.rect = load_image()
+    BigMac.image, BigMac.rect = load_image("bigmac.png", "main_pic")
     BigMac.rect[0], BigMac.rect[1] = 350, 480
     #設置按鍵
     BigMac.up = K_UP
@@ -190,7 +190,7 @@ def main():
     HongYu = Game.NPC()
     #初始位置
     #420 480
-    HongYu.image, HongYu.rect = load_image()
+    HongYu.image, HongYu.rect = load_image("hongyu.png", "main_pic")
     HongYu.rect[0], HongYu.rect[1] = 420, 480
     #設置按鍵
     HongYu.up = K_w
@@ -387,11 +387,13 @@ def main():
                 pygame.time.wait(5000)
                 #回復
                 screen.blit(Hua.image, Hua.rect)
+                member.skill_flag_pic = False
             if member.skill_flag:
                 if member == RM:
                     Hua.injure(5, RM.sound_flag)
                 else:
                     Hua.scream.play()
+                member.skill_flag = False
 
         #貼上
         Hua.update()
@@ -411,7 +413,7 @@ def main():
             break
 
         #判斷過關!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        if :
+        if Hua.rect[0] > 1240 and Hua.rect[1] > 770:
             applause = load_sound("applause.wav")
             success_flag = True
             fail_flag = False
