@@ -137,47 +137,67 @@ def main():
 
     RM = Game.BTS()   #破壞
     RM.image, RM.rect = load_image("koya.jpg", "main_pic")
+    RM.rect[0], RM.rect[1] = 390, 400
     RM.skill = "Dumb: damage"
+    RM.sound_flag = True
+
     Jin = Game.BTS()   #冰凍
     Jin.image, Jin.rect = load_image("rj.jpg", "main_pic")
+    Jin.rect[0], Jin.rect[1] = 460, 420
     Jin.skill = load_image("ice.png", "main_pic")
+
     Suga = Game.BTS()   #石化
     Suga.image, Suga.rect = load_image("shooky.png", "main_pic")
+    Suga.rect[0], Suga.rect[1] = 480, 500
     Suga.skill = load_image("stone.png", "main_pic")
+
     J_hope = Game.BTS()   #融化
     J_hope.image, J_hope.rect = load_image("mang.jpg", "main_pic")
+    J_hope.rect[0], J-hope.rect[1] = 440, 530
     J-hope.skill = load_image("flame.png", "main_pic")
+    J_hope.sound_flag = True
+
     Jimin = Game.BTS()    #放大
     Jimin.image, Jimin.rect = load_image("chimmy.png", "main_pic")
+    Jimin.rect[0], Jimin.rect[1] = 340, 530
     Jimin.skill = False
+
     V = Game.BTS()    #迷路
     V.image, V.rect = load_image("tata.jpg", "main_pic")
+    V.rect[0], V.rect[1] = 300 ,500
     V.skill = "Dumb: shift"
+    V.sound_flag = True
+
     Jungkook = Game.BTS()   #嗜睡
     Jungkook.image, Jungkook.rect = load_image("cooky.jpg", "main_pic")
-    Jungkook.skill = "Zzz..."
+    Jungkook.rect[0], Jung.rect[1] = 310, 420
+    Jungkook.sound_flag = True
 
     BigMac = Game.NPC()
     #初始位置
-    BigMac.x = 
-    BigMac.y = 
+    #350 480
+    BigMac.image, BigMac.rect = load_image()
+    BigMac.rect[0], BigMac.rect[1] = 350, 480
+    #設置按鍵
     BigMac.up = K_UP
     BigMac.down = K_DOWN
     BigMac.left = K_LEFT
     BigMac.right = K_RIGHT
     #一個surface物件的LIST
-    BigMac.alltalk = [NPC.talk_font.render(), NPC.talk_font.render(), NPC.talk_font.render()]
+    #BigMac.alltalk = [NPC.talk_font.render(), NPC.talk_font.render(), NPC.talk_font.render()]
     BigMac.healing = K_h
 
     HongYu = Game.NPC()
     #初始位置
-    HongYu.x = 
-    HongYu.y = 
+    #420 480
+    HongYu.image, HongYu.rect = load_image()
+    HongYu.rect[0], HongYu.rect[1] = 420, 480
+    #設置按鍵
     HongYu.up = K_w
     HongYu.down = K_s
     HongYu.left = K_a
     HongYu.right = K_d
-    HongYu.alltalk = [NPC.talk_font.render("你確定你有搞懂自己在幹嘛嗎？", True, (0, 0, 0)), NPC.talk_font.render("唉...", True, (0, 0, 0)), NPC.talk_font.render()]
+    #HongYu.alltalk = [NPC.talk_font.render("你確定你有搞懂自己在幹嘛嗎？", True, (0, 0, 0)), NPC.talk_font.render("唉...", True, (0, 0, 0)), NPC.talk_font.render()]
     HongYu.healing = K_c
     #障礙物和人分開處理
     NPC_group = pygame.sprite.Group(HongYu, BigMac)
@@ -188,7 +208,7 @@ def main():
     #--音樂還有背景的部分--------------------------------------------------------------------------------------------------------------
     main_bg = load_image("mars.jpg", "main_pic")
     #把喜歡的歌都放進來吧!!!
-    main_bgm_list = ["epiphany", "fake_love", "make_it_right",  "save_me", "tomorrow"]
+    main_bgm_list = ["epiphany", "fake_love", "make_it_right", "save_me", "tomorrow"]
     for i in range(0, len(main_bgm_list)-1):
         main_bgm_list[i] = load_sound(main_bgm[i]+".wav")
 
@@ -270,50 +290,35 @@ def main():
             for member in pygame.sprite.spritecollide(Hua, BTS_group, False):
                 if member == RM:
                     #破壞
-                    member.stepback()
-                    Hua.injure(5, True)
+                    Hua.stepback()
+                    member.skill_flag = True
                 elif member == Jin:
                     #冰凍
-                    member.stepback()
-                    size_surf = pygame.Surface((Hua.rect[2], Hua.rect[3]))
-                    size_surf.blit(Jin.skill[0], (0, 0))
-                    #左上角
-                    screen.blit(size_surf, (self.rect[0], self.rect[1]))
-                    Hua.injure(5, False)
-                    #把人貼回去
-                    Hua.draw(screen)
+                    Hua.stepback()
+                    member.skill_flag_pic = True
                 elif member == Suga:
                     #石化
-                    member.stepback()
-                    size_surf = pygame.Surface((Hua.rect[2], Hua.rect[3]))
-                    size_surf.blit(Suga.skill[0], (0, 0))
-                    #左上角
-                    screen.blit(size_surf, (self.rect[0], self.rect[1]))
-                    Hua.injure(5, False)
-                    #把人貼回去
-                    Hua.draw(screen)
+                    Hua.stepback()
+                    member.skill_flag_pic = True
                 elif member == J_hope:
                     #燃燒
-                    member.stepback()
-                    size_surf.blit(J_hope.skill[0], (0, 0))
-                    #左上角
-                    screen.blit(size_surf, (self.rect[0], self.rect[1]))
-                    Hua.injure(5, False)
-                    #把人貼回去
-                    Hua.draw(screen)
+                    Hua.stepback()
+                    member.skill_flag_pic = True
                 elif member == Jimin:
                     #放大
-                    member.stepback()
-                    Jimin.skill = True
-                    Hua.image.inflate(1.5, 1.5)
+                    Hua.stepback()
+                    Jimin.skill_flag = True
+                    Hua.image.inflate(1.2, 1.2)
                 elif member == V:
                     #瞬移
-                    member.stepback()
+                    Hua.stepback()
+                    member.skill_flag = True
                     Hua.rect[0], Hua.rect[1] = ("起點座標'!!!!!!!")
 
                 elif member == Jungkook:
                     #單純的小孩
-                    member.stepback()
+                    Hua.stepback()
+                    member.skill_flag = True
 
                 else:
                     pass
@@ -371,6 +376,22 @@ def main():
         #########儲存上一個位置：判斷後退和移動
         Hua.last_pos = pygame.mouse.get_pos()
         self.last_pos = (self.rect[0], self.rect[1])
+
+        #判斷有沒有碰到成員()
+        for member in BTS_group:
+            if member.skill_flag_pic:
+                #蓋上技能(圖片的部分)
+                screen.blit(member.skill[0], (Hua.rect[0], Hua.rect[1]))
+                #受傷
+                Hua.injure(5, member.sound_flag)
+                pygame.time.wait(5000)
+                #回復
+                screen.blit(Hua.image, Hua.rect)
+            if member.skill_flag:
+                if member == RM:
+                    Hua.injure(5, RM.sound_flag)
+                else:
+                    Hua.scream.play()
 
         #貼上
         Hua.update()

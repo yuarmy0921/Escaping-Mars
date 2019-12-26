@@ -69,10 +69,10 @@ class Player(pygame.sprite.Sprite):
         self.size_half= (self.rect[2]//2, self.rect[3]//2)
         pygame.mouse.set_visible(False)
         #初始位置
+        #因為是滑鼠所以要這樣用
         self.pos = "自己設定!!!!!!!!!!!!!!!!!!!!!!!!!"
         self.last_pos = None
         self.dx, self.dy = None, None
-        self.save_rect = None
         pygame.mouse.set_pos([x, y])
         self.rect[0], self.rect[1] = self.pos[0]-self.size_half[0], self.pos[1]-self.size_half[1]
 
@@ -128,6 +128,7 @@ class Player(pygame.sprite.Sprite):
         '''
         if play:
             self.scream.play()
+            pygame.time.wait(1000)
         #血條減少(一次把兩個surface貼上去)
         #這裡要調整難度!!!!!!!!!!!!!!!!!現在可以被摸15次
         for round in range(times):
@@ -164,7 +165,11 @@ class BTS(pygame.sprite.Sprite):
         self.rect[0], self.rect[1] = self.pos[0], self.pos[1]
         self.draw(screen)
         self.skill = None 
+        #要再建立維持技能的計時器!!!!!!!!
+        #貼上特效再受傷!!!!!!!!!!!!!!!!!!
         self.skill_flag = False
+        self.skill_flag_pic = False
+        self.sound_flag = False
         
 
     def stepback(self):
@@ -193,7 +198,7 @@ class NPC(pygame.sprite.Sprite):
     def __init__(self, draw = screen):
         pygame.sprite.Sprite.__init__(self)
         screen = draw
-        self.image, self.rect = load_image()
+        self.image, self.rect = None, None
         self.save_image = None
         self.size = (self.rect[2], self.rect[3])
         speed = 3

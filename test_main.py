@@ -5,6 +5,8 @@ import math
 import os, sys
 from pygame.locals import *
 from pygame.compat import geterror
+import cv2
+import numpy as np
 
 def main():
     pygame.init()
