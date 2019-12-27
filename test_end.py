@@ -43,9 +43,7 @@ def load_sound(name):
 
     
 def main():
-    print('enter main')
     pygame.init()
-    print("flag")
     screen = pygame.display.set_mode((1440, 800))
     class Ending(pygame.sprite.Sprite):
         def __init__(self):
@@ -56,15 +54,13 @@ def main():
     ending_bg = load_image("mars.jpg", "ending_pic")
     screen.blit(ending_bg[0], (0, 0))
     pygame.display.flip()
-    print("flag")
     ending_music.play(-1)
     #-----------------------------------------------------------------------------
-    print("flag")
     color = (255, 255, 255)
     title_font = pygame.font.Font("game_material/font/HanaMin/HanaMinA.ttf", 20)
     title_font.set_bold(True)
     content_font = pygame.font.Font("game_material/font/HanaMin/HanaMinA.ttf", 15)
-    print("flag")
+    content_font.set_bold(True)
     t1 = Ending()
     t1.image = title_font.render("GUI Design", True, color)
     t1.rect = t1.image.get_rect()
@@ -82,11 +78,11 @@ def main():
     c2.rect = c2.image.get_rect()
 
     t3 = Ending()
-    t3.image = title_font.render("Character Design", True, color)
+    t3.image = title_font.render("Characters Design", True, color)
     t3.rect = t3.image.get_rect()
 
     c3 = Ending()
-    c3.image = content_font.render("", True, color)
+    c3.image = content_font.render("林郁敏", True, color)
     c3.rect = c3.image.get_rect()
 
     t4 = Ending()
@@ -94,7 +90,7 @@ def main():
     t4.rect = t4.image.get_rect()
 
     c4 = Ending()
-    c4.image = content_font.render("BT21", True, color)
+    c4.image = content_font.render("BT21 by LINE Corporation", True, color)
     c4.rect = c4.image.get_rect()
 
     t5 = Ending()
@@ -110,7 +106,7 @@ def main():
     t6.rect = t6.image.get_rect()
 
     c6 = Ending()
-    c6.image = content_font.render("BTS-Sea     BTS-So far away     BTS-Epiphany     BTS-Magic shop     BTS-Mikrokosmos     BTS-Make it right     BTS-Tomorrow     BTS-Save ME", True, color)
+    c6.image = content_font.render("BTS-Sea    BTS-So far away    BTS-Epiphany    BTS-Magic shop    BTS-Mikrokosmos    BTS-Make it right    BTS-Tomorrow    BTS-Save ME", True, color)
     c6.rect = c6.image.get_rect()
 
     t7 = Ending()
@@ -118,36 +114,41 @@ def main():
     t7.rect = t7.image.get_rect()
 
     c7 = Ending()
-    c7.image = content_font.render("", True, color)
+    c7.image = content_font.render("林宗男 教授     顏宏宇 助教     劉正仁 助教     劉玟慶 助教     郭育昇 助教", True, color)
     c7.rect = c7.image.get_rect()
 
     ending = Ending()
-    ending.image = content_font.render("All rights not reserved", True, color)
+    ending.image = content_font.render("All rights reserved", True, color)
     ending.rect = ending.image.get_rect()
 
     #
     text = [t1, c1, t2, c2, t3, c3, t4, c4, t5, c5, t6, c6, t7, c7, ending]
-    print("flag")
-
     
-    x = 200
+    
     y = 100
+    judge = False
     for sentence in text:
-        sentence.rect[0], sentence.rect[1] = x, y
-        print(sentence.rect[0], sentence.rect[1])
-        y += 50
+        sentence.rect[0], sentence.rect[1] = 720-sentence.rect[2]//2, y
+        #print(sentence.rect[0], sentence.rect[1])
+        if not judge:
+            y += 50
+            judge = True
+        else:
+            y += 100
+            judge = False
     cal = 0
     while cal <= 2000:
         screen.blit(ending_bg[0], (0, 0))
         for sentence in text:
-            print(sentence.rect[0], sentence.rect[1])
-            sentence.rect.move_ip(0, -10)
-            screen.blit(sentence.image, (sentence.rect[0], sentence.rect[1]))  
-        #
+            #print(sentence.rect[0], sentence.rect[1])
+            if sentence.rect[1] > 0:
+                sentence.rect.move_ip(0, -1)
+                screen.blit(sentence.image, (sentence.rect[0], sentence.rect[1]))  
+            
         pygame.display.update()
-        pygame.time.wait(1000)
-        cal += 100
+        pygame.time.wait(10)
+        cal += 1
     ending_music.fadeout(5000)
-    pygame.quit()
-print('before main')
+    pygame.time.wait(5000)
+    pygame.display.quit()
 main()

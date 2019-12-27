@@ -89,7 +89,7 @@ def main():
     screen = pygame.display.set_mode((game.maze.image.get_size()))
     screen.blit(game.maze.image, game.maze.rect)
     quit_flag = False
-    while not quit_flag:
+    while True:
         for event in pygame.event.get():
             if event.type == KEYDOWN:
                 quit_flag = True
