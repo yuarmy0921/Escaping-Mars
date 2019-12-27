@@ -205,7 +205,8 @@ def main():
                 #print(item)
             Hua.stepback()
             Hua.injure(len(hua_barrier), True)
-            #barriers.fire()
+            for barrier in barriers:
+                barrier.fire()
             hua_barrier = []
 
 

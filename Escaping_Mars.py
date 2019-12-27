@@ -280,25 +280,41 @@ class NPC(pygame.sprite.Sprite):
         self.screen.blit(self.image, self.rect)
         pygame.display.update(self.rect)
 
+def Resize(path, unit):
+    image = cv2,imread(path)
+    image = cv2.resize(image, (unit,unit))
+    image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+    return image
+
 class MazeBarrier(pygame.sprite.Sprite):
 
     def __init__(self, position, row, col, unit, maze, x,y): # position是傳進行與列
         super().__init__()
-        barrier_image = cv2.imread("./game_material/main_pic/barrier.png")
-        barrier_image = cv2.resize(barrier_image, (unit, unit))
-        barrier_image = cv2.cvtColor(barrier_image, cv2.COLOR_BGR2RGB)
+        self.position = position
+        self.unit = unit
+
+        barrier_image = Resize("./game_material/main_pic/barrier.png",self.unit)
         maze[x*2+row*unit:x*2+row*unit+unit, y+col*unit:y+col*unit+unit, :] = barrier_image
         self.image = pygame.surfarray.make_surface(np.transpose(barrier_image ,(1,0,2)))
         self.rect = pygame.Rect(position, barrier_image.shape[:2])
-    """
+
+        fire_image = Resize("./game_material/main_pic/fire.png", self.unit)
+        self.fire_image = pygame.surfarray.make_surface(np.transpose(fire_image, (1,0,2)))
+        self.fire_rect = self.rect.copy()
+    
     def fire(self):
         # 每一個障礙物都會燒起來！
-        # 原本的狀態先存起來，火燒完後再回來
-        ori_image, ori_rect = self.image, self.rect
-        self.image, self.rect = load_image("","main_pic")
-        time.sleep(0.5)
-        self.image, self.rect = ori_image, ori_rect
-    """ 
+        ori_image = self.image
+        quit_flag = False
+        clock = pygame.time.Clock()
+        while not quit_flag:
+            if t > 1:
+                quit_flag = True
+            clock.tick(30)
+            self.image = self.fire_image.subsurface(self.fire_rect)
+            t += 1
+        self.image = ori_image
+     
 class Maze(pygame.sprite.Sprite):
 
     def __init__(self, position, texture):
