@@ -73,10 +73,10 @@ class Player(pygame.sprite.Sprite):
         #初始位置
         #因為是滑鼠所以要這樣用
         #這個用來記錄滑鼠當前位置
-        self.start = (160, 170)
-        self.finish = (1240, 740)
-        self.pos = (160, 170)
-        self.last_pos = (160, 170)
+        self.start = (5, 165)
+        self.finish = (1400, 750)
+        self.pos = (5, 165)
+        self.last_pos = (5, 165)
         self.dx, self.dy = None, None
         self.rect[0], self.rect[1] = self.pos[0]-self.size_half[0], self.pos[1]-self.size_half[1]
         pygame.mouse.set_pos([self.pos[0], self.pos[1]])
@@ -87,6 +87,8 @@ class Player(pygame.sprite.Sprite):
         self.blood_surface.fill((255,0,0))
         self.empty_surface = pygame.Surface((300, 20))
         self.empty_surface.fill((255, 255, 255))
+        self.bloodrect = pygame.Rect(570, 110, 300, 20)
+        self.pic_rect = None
         #然後玩家的初始設定大概差不多就結束了
         self.scream = load_sound("scream.wav")
 
@@ -141,8 +143,8 @@ class Player(pygame.sprite.Sprite):
             if self.blood > 0:
                 self.blood_surface = pygame.Surface((self.blood, 20))
                 self.blood_surface.fill((255,0,0))
-                self.screen.blits(((self.empty_surface, (570, 110)), (self.blood_surface, (570, 110))))
-                pygame.display.update(self.empty_surface.get_rect())
+                self.screen.blits(((self.empty_surface, self.bloodrect), (self.blood_surface, self.bloodrect)))
+                pygame.display.update(self.bloodrect)
                 
             else:
                 self.dead = True
@@ -150,10 +152,10 @@ class Player(pygame.sprite.Sprite):
         #把所有東西都畫上去
         #人的部分
         self.screen.blit(self.image, self.rect)
-        self.screen.blit(self.bighead, self.picpos)
+        self.screen.blit(self.bighead, self.pic_rect)
         #血條的部分
-        self.screen.blits(((self.empty_surface, (570, 110)), (self.blood_surface, (570, 110))))
-        pygame.display.update(self.rect)
+        self.screen.blits(((self.empty_surface, self.bloodrect), (self.blood_surface, self.bloodrect)))
+        pygame.display.update([self.rect, self.bloodrect, self.pic_rect])
     
 class BTS(pygame.sprite.Sprite):
     '''
@@ -179,7 +181,7 @@ class BTS(pygame.sprite.Sprite):
         self.rect.clamp_ip(pygame.Rect(0, 0, 1440, 800))
 
     def stepback(self):
-        self.rect.move_ip(-self.dx, -self.dy)
+        self.rect.move_ip(-10*self.dx, -10*self.dy)
 
     def change_dir(self):    
         direction = random.randint(0, 360)
@@ -215,9 +217,20 @@ class NPC(pygame.sprite.Sprite):
         self.right = None
         #上一個按下的按鍵
         self.prev = None
+        self.pic_rect = None
+        self.bighead = None
         #對話內容
-        talk_font = pygame.font.Font("game_material/font/HanaMin/HanaMinA.ttf", 10)
+        self.talk_time = 0
+        self.talk_flag = False
+        self.talk_frame = None
+        self.frame_rect = None
+        self.talk_font = pygame.font.Font("game_material/font/HanaMin/HanaMinA.ttf", 15)
+        self.talk_font.set_bold(True)
         self.alltalk = None
+        self.name_font = pygame.font.Font("game_material/font/HanaMin/HanaMinA.ttf", 15)
+        self.name_font.set_bold(True)
+        self.name = None
+        self.name_rect = None
         
     def Up(self):
         self.prev = self.up
@@ -253,27 +266,28 @@ class NPC(pygame.sprite.Sprite):
         碰到玩家
         講一些幹話
         '''
-        #從一群對話中隨機選出一句，對話放頭上(名字以上)，決定適當的距離!!!!!!!!!!
-        self.talk = talk
         #convert()：建立副本
-        self.talk = self.talk.convert()
-        #文字框根據對話的長度來決定
-        self.talk_bg = pygame.Surface((self.talk.get_width(), self.talk.get_height()))
-        self.talk_bg.fill((255, 255, 255))
-        self.talk_bg = self.talk_bg.convert()
-        self.talk_bg.blit(self.talk, (0, 0))
-        self.image, self.rect = self.talk_bg, 
         #建立計時器，維持幾秒
         #先這樣!!!!!!!!!!!!!!!!!!
-        random_talk = self.alltalk[random.randint(0, len(self.alltalk)-1)]
-        screen.blit((random_talk.talk_bg, (self.x, self.y + 10)))
-        pygame.time.wait(5000)
+        self.random_talk = self.alltalk[random.randint(0, len(self.alltalk)-1)]
+        self.random_talk = self.random_talk.convert_alpha()
+        self.screen.blit(self.random_talk, (self.frame_rect[0]+50, self.frame_rect[1]+40))
+        pygame.display.update(self.frame_rect)
         #移除對話
     def update(self):
         self.screen.blit(self.image, self.rect)
-        self.screen.blit(self.bighead, self.picpos)
-        self.screen.blit(self.talk_frame, self.framepos)
-        pygame.display.update(self.rect)
+        self.screen.blit(self.bighead, self.pic_rect)
+        self.screen.blit(self.talk_frame, self.frame_rect)
+        self.screen.blit(self.name, self.name_rect)
+        if self.talk_flag and self.talk_time <= 500:
+            self.talk_time += 1
+            self.screen.blit(self.random_talk, (self.frame_rect[0]+50, self.frame_rect[1]+40))
+            
+        else:
+            self.talk_flag = False
+            self.talk_time = 0
+        pygame.display.update([self.rect, self.name_rect, self.pic_rect, self.frame_rect])
+        
 
 def Resize(path, unit):
     image = cv2.imread(path)
@@ -296,6 +310,7 @@ class MazeBarrier(pygame.sprite.Sprite):
         fire_image = Resize("./game_material/main_pic/fire.png",self.unit)
         self.fire_image = pygame.surfarray.make_surface(np.transpose(fire_image, (1,0,2)))
         self.fire_rect = self.rect.copy()
+        self.screen = pygame.surface.Surface((10, 10))
     
     def fire(self):
         # 每一個障礙物都會燒起來！
@@ -308,6 +323,8 @@ class MazeBarrier(pygame.sprite.Sprite):
                 quit_flag = True
             clock.tick(30)
             self.image = self.fire_image.subsurface(self.fire_rect)
+            self.screen.blit(self.image, self.rect)
+            pygame.display.update(self.rect)
             t += 1
         self.image = ori_image
      

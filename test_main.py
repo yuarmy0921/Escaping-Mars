@@ -29,88 +29,92 @@ def main():
     #Hua.image, Hua.rect = 
     Hua.screen = screen
     Hua.bighead = pygame.image.load("game_material/main_pic/hua_bighead1.png")
-    Hua.picpos = (670, 5)
+    Hua.pic_rect = pygame.Rect(670, 5, 100, 100)
 
     RM = Game.bts1  #破壞
     RM.screen = screen
     RM.image, RM.rect = load_image("koya.png", "main_pic")
-    RM.rect[0], RM.rect[1] = 720, 380
+    RM.rect[0], RM.rect[1] = 720, 280
     RM.skill = "Dumb: damage"
     RM.sound_flag = True
 
     Jin = Game.bts2   #冰凍
     Jin.screen = screen
     Jin.image, Jin.rect = load_image("rj.png", "main_pic")
-    Jin.rect[0], Jin.rect[1] = 790, 400
+    Jin.rect[0], Jin.rect[1] = 790, 300
     Jin.skill = load_image("ice.png", "main_pic")
 
     Suga = Game.bts3  #石化
     Suga.screen = screen
     Suga.image, Suga.rect = load_image("shooky.png", "main_pic")
-    Suga.rect[0], Suga.rect[1] = 790, 480
+    Suga.rect[0], Suga.rect[1] = 790, 380
     Suga.skill = load_image("stone.png", "main_pic")
 
     J_hope = Game.bts4   #融化
     J_hope.screen = screen
     J_hope.image, J_hope.rect = load_image("mang.png", "main_pic")
-    J_hope.rect[0], J_hope.rect[1] = 750, 520
+    J_hope.rect[0], J_hope.rect[1] = 750, 420
     J_hope.skill = load_image("flame.png", "main_pic")
     J_hope.sound_flag = True
 
     Jimin = Game.bts5   #放大
     Jimin.screen = screen
     Jimin.image, Jimin.rect = load_image("chimmy.png", "main_pic")
-    Jimin.rect[0], Jimin.rect[1] = 690, 520
+    Jimin.rect[0], Jimin.rect[1] = 690, 420
     Jimin.skill = False
 
     V = Game.bts6   #迷路
     V.screen = screen
     V.image, V.rect = load_image("tata.png", "main_pic")
-    V.rect[0], V.rect[1] = 640, 480
+    V.rect[0], V.rect[1] = 640, 380
     V.skill = "Dumb: shift"
     V.sound_flag = True
 
     Jungkook = Game.bts7  #嗜睡
     Jungkook.screen = screen
     Jungkook.image, Jungkook.rect = load_image("cooky.png", "main_pic")
-    Jungkook.rect[0], Jungkook.rect[1] = 650, 400
+    Jungkook.rect[0], Jungkook.rect[1] = 650, 300
     Jungkook.sound_flag = True
 
     BigMac = Game.npc1
+    BigMac.name = BigMac.name_font.render("大麥", True, (255, 255, 255))
+    BigMac.name_rect = pygame.Rect(1375, 110, 50, 20)
     BigMac.screen = screen
     BigMac.bighead = pygame.image.load("game_material/main_pic/bigmac_bighead1.png")
-    BigMac.picpos = (1335, 5)
+    BigMac.pic_rect = (1335, 5, 100, 100)
     BigMac.talk_frame = load_image("bigmac_talk_frame.png", "main_pic")
     BigMac.talk_frame = BigMac.talk_frame[0]
-    BigMac.framepos = (1025, 30)
+    BigMac.frame_rect = pygame.Rect(925, 30, 400, 100)
     #初始位置
     #350 480
     BigMac.image, BigMac.rect = load_image("bigmac.png", "main_pic")
-    BigMac.rect[0], BigMac.rect[1] = 680, 440
+    BigMac.rect[0], BigMac.rect[1] = 680, 340
     #設置按鍵
     BigMac.up = K_UP
     BigMac.down = K_DOWN
     BigMac.left = K_LEFT
     BigMac.right = K_RIGHT
     #一個surface物件的LIST
-    #BigMac.alltalk = [NPC.talk_font.render(""), NPC.talk_font.render(), NPC.talk_font.render()]
+    BigMac.alltalk = [BigMac.talk_font.render("你再一直來的話...我就不理你了QQ", True, (0, 0, 0)), BigMac.talk_font.render("能走到哪就走到哪，誠實面對自己~", True, (0, 0, 0)), BigMac.talk_font.render("可以的~你台大電機的耶!", True, (0, 0, 0))]
 
     HongYu = Game.npc2
+    HongYu.name = HongYu.name_font.render("宏宇", True, (255, 255, 255))
+    HongYu.name_rect = pygame.Rect(40, 110, 50, 20)
     HongYu.screen = screen
-    HongYu.picpos = (5, 5)
     HongYu.bighead = pygame.image.load("game_material/main_pic/hongyu_bighead1.png")
+    HongYu.pic_rect = pygame.Rect(5, 5, 100, 100)
     HongYu.talk_frame = load_image("hongyu_talk_frame.png", "main_pic")
     HongYu.talk_frame = HongYu.talk_frame[0]
-    HongYu.framepos = (115, 30)
+    HongYu.frame_rect = pygame.Rect(115, 30, 400, 100)
     #初始位置
     #420 480
     HongYu.image, HongYu.rect = load_image("hongyu.png", "main_pic")
-    HongYu.rect[0], HongYu.rect[1] = 750, 440
+    HongYu.rect[0], HongYu.rect[1] = 750, 340
     HongYu.up = K_w
     HongYu.down = K_s
     HongYu.left = K_a
     HongYu.right = K_d
-    #HongYu.alltalk = [NPC.talk_font.render("你確定你有搞懂自己在幹嘛嗎？", True, (0, 0, 0)), NPC.talk_font.render("唉...", True, (0, 0, 0)), NPC.talk_font.render()]
+    HongYu.alltalk = [HongYu.talk_font.render("你確定你有搞懂自己在幹嘛嗎？", True, (0, 0, 0)), HongYu.talk_font.render("祝同學活得順利。", True, (0, 0, 0)), HongYu.talk_font.render("快死了就要求救，不要拖到最後。", True, (0, 0, 0))]
     #障礙物和人分開處理
     NPC_group = pygame.sprite.Group(HongYu, BigMac)
     BTS_group = pygame.sprite.Group(RM, Jin, Suga, J_hope, Jimin, V, Jungkook)
@@ -158,6 +162,7 @@ def main():
                 #滑鼠移動到哪就馬上移動到哪
                 Hua.pos = event.pos
                 Hua.walk()
+                
             elif event.type == KEYDOWN:
                 # 這裡是大麥控制
                 if event.key == K_UP:       
@@ -216,7 +221,13 @@ def main():
             Hua.stepback()
             Hua.injure(len(hua_barrier), True)
             #for barrier in barriers:
-            #barrier.fire()
+                #barrier.fire()
+            screen.blit(main_bg[0], main_bg[1])
+            screen.blit(maze.image, maze.rect)
+            screen.blits(((Hua.empty_surface, (570, 110)), (Hua.blood_surface, (570, 110))))
+            pygame.display.flip()
+            BTS_group.update()
+            NPC_group.update()
             hua_barrier = []
 
         #BTS
@@ -250,6 +261,14 @@ def main():
                     Hua.stepback()
                     member.skill_flag = True
                     Hua.rect[0], Hua.rect[1] = Hua.start[0], Hua.start[1]
+                    screen.blit(main_bg[0], main_bg[1])
+                    screen.blit(maze.image, maze.rect)
+                    screen.blits(((Hua.empty_surface, (570, 110)), (Hua.blood_surface, (570, 110))))
+                    pygame.mouse.set_pos([Hua.rect[0], Hua.rect[1]])
+                    screen.blit(Hua.image, Hua.rect)
+                    pygame.display.flip()
+                    BTS_group.update()
+                    NPC_group.update()
 
                 elif member == Jungkook:
                     #單純的小孩
@@ -263,9 +282,16 @@ def main():
         #NPC
         if len(hua_npc) > 0:
             for member in hua_npc:
+                member.talk_flag = True
+                temp_pos = pygame.mouse.get_pos()
                 member.stepback()
-                #member.trash_talk()
+                member.stepback()
+                member.stepback()
+                member.trash_talk()
                 Hua.recover()
+                pygame.mouse.set_pos(temp_pos)
+                Hua.rect[0], Hua.rect[1] = temp_pos[0], temp_pos[1]
+                pygame.display.update(Hua.rect)
             hua_npc = []
 
 
