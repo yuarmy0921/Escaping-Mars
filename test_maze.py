@@ -5,11 +5,12 @@ from pygame.locals import *
 
 class MazeBarrier(pygame.sprite.Sprite):
 
-    def __init__(self, position, row, col, unit, maze): # position是傳進行與列
+    def __init__(self, position, row, col, unit, maze, x,y): # position是傳進行與列
         super().__init__()
         barrier_image = cv2.imread("./game_material/main_pic/barrier.png")
         barrier_image = cv2.resize(barrier_image, (unit, unit))
-        maze[row*unit:row*unit+unit, col*unit:col*unit+unit, :] = barrier_image
+        barrier_image = cv2.cvtColor(barrier_image, cv2.COLOR_BGR2RGB)
+        maze[x*2+row*unit:x*2+row*unit+unit, y+col*unit:y+col*unit+unit, :] = barrier_image
         self.image = pygame.surfarray.make_surface(np.transpose(barrier_image ,(1,0,2)))
         self.rect = pygame.Rect(position, barrier_image.shape[:2])
 
@@ -25,6 +26,8 @@ class MazeGame:
 
     def __init__(self):
         unit = 15
+        width, height = 1440, 800
+        maze_width, maze_height = 1140, 650
 
         # The following attributes will be initialized later
         self.maze = None
@@ -37,12 +40,17 @@ class MazeGame:
         with open(("maze.txt"), "r") as f:
             # Reserve space for maze
             lines = f.read().strip("\n").split("\n") # Read the map
-            maze = np.zeros((800, 1440, 3))
+            maze = np.zeros((height, width, 3))
+            # numpy shape (height, width, depth)
+            # cv2.resize(image,(width, height))
+            # [height, width,:]
 
             # resize bg
             bg = cv2.imread("./game_material/main_pic/mars.jpg")
-            bg = cv2.resize(bg, (1140, 650))
-            maze[0:650, 0:1140, :] = bg
+            bg = cv2.cvtColor(bg, cv2.COLOR_BGR2RGB)
+            bg = cv2.resize(bg, (maze_width, maze_height))
+            x, y = (height - maze_height)//2, (width - maze_width)//2
+            maze[x*2:x*2+maze_height, y:y+maze_width, :] = bg
             # 左上角：(150, 75)
 
             # Initialize maze row by row
@@ -50,47 +58,44 @@ class MazeGame:
                 for col, symbol in enumerate(line):
                     if symbol == '0': # 障礙物
                         # Create barrier
-                        barrier = MazeBarrier((col*unit, row*unit),row,col,unit,maze)
+                        barrier = MazeBarrier((col*unit, row*unit),row,col,unit,maze,x,y)
                         self.barriers.append(barrier)
                     elif symbol == '1': # 路，不需要load image，用背景即可
                         pass
                     elif symbol == 'S': # 起點
-                        # 設成白色
-                        maze[row*unit:row*unit+unit, col*unit:col*unit+unit, :] = 255
+                        # 設成red
+                        maze[x*2+row*unit:x*2+row*unit+unit, y+col*unit:y+col*unit+unit, 1] = 255
 
                         # Create player
                         #self.player = Player((col*unit, row*unit))
                         # 我想要做的是，這是在傳player位置，安捏干丟？？？？
                     elif symbol == 'F': # 終點
-                        # 設成白色
-                        maze[row*unit:row*unit+unit, col*unit:col*unit+unit, :] = 255
-                        print("Yeah！！！！！")
+                        # 設成red
+                        maze[x*2+row*unit:x*2+row*unit+unit, y+col*unit:y+col*unit+unit, 2] = 255
 
                         # Record the exit point
                         self.exit_point = (col*unit, row*unit)
                     else:
                         raise Exception("Invalid symbol in maze '%s'" % symbol)
         # Save maze
-        self.maze = Maze((75, 150), maze.copy())
+        self.maze = Maze((0,0), maze.copy())
         
         # Create groups
         self.barrier_group = pygame.sprite.Group(self.barriers)
 
-
-
 def main():
     pygame.init()
     game = MazeGame()
-    screen = pygame.display.set_mode(game.maze.image.get_size())
+    screen = pygame.display.set_mode((game.maze.image.get_size()))
     screen.blit(game.maze.image, game.maze.rect)
-    print("finish！")
     quit_flag = False
     while not quit_flag:
         for event in pygame.event.get():
-            if event.type == pygame.KEYDOWN:
+            if event.type == KEYDOWN:
                 quit_flag = True
         if quit_flag:
             break
+    pygame.quit()
 
 main()
 
