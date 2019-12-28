@@ -324,7 +324,7 @@ class MazeGame:
     def __init__(self):
         unit = 10
         width, height = 1440, 800
-        maze_width, maze_height = 1440, 650
+        #maze_width, maze_height = 1440, 650
 
         # The following attributes will be initialized later
         self.player = Player()
@@ -353,17 +353,18 @@ class MazeGame:
             # resize bg
             bg = cv2.imread("./game_material/main_pic/mars.jpg")
             bg = cv2.cvtColor(bg, cv2.COLOR_BGR2RGB)
-            bg = cv2.resize(bg, (maze_width, maze_height))
-            x, y = (height - maze_height)//2, (width - maze_width)//2
-            maze[0:maze_height, y:y+maze_width, :] = bg
-            # 左上角：(150, 75)
+            bg = cv2.resize(bg, (width, height))
+            #x, y = (height - maze_height)//2, (width - maze_width)//2
+            x, y = 75, 0
+            maze[0:height, 0:0+width, :] = bg
+            # 左上角：(y width = 0, x height = 75)
 
             # Initialize maze row by row
             for row, line in enumerate(lines):
                 for col, symbol in enumerate(line):
                     if symbol == '0': # 障礙物
                         # Create barrier
-                        barrier = MazeBarrier((col*unit, row*unit),row,col,unit,maze,x,y)
+                        barrier = MazeBarrier((col*unit, row*unit),row,col,unit,maze,75,0)
                         self.barriers.append(barrier)
                     elif symbol == '1': # 路，不需要load image，用背景即可
                         pass
