@@ -1,0 +1,34 @@
+#########儲存上一個位置：判斷後退和移動
+        Hua.last_pos = pygame.mouse.get_pos()
+        Hua.rect[0], Hua.rect[1] = Hua.last_pos[0], Hua.last_pos[1]
+        screen.blit(main_bg[0], main_bg[1])
+        screen.blit(maze.image, maze.rect)
+        screen.blits(((Hua.empty_surface, (400, 50)), (Hua.blood_surface, (400, 50)), (Hua.life, (330, 35))))
+        BTS_group.update()
+        NPC_group.update()
+        pygame.display.flip()
+        #判斷有沒有碰到成員()
+        for member in BTS_group:
+            if member.skill_flag_pic:
+                #蓋上技能(圖片的部分)
+                #有bug!!!!!!!!!!!!
+                #先退三步(避免一直反應)
+                Hua.stepback()
+                Hua.stepback()
+                Hua.stepback()
+                screen.blit(member.skill[0], (Hua.rect[0], Hua.rect[1]))
+                pygame.display.update(Hua.rect)
+                #受傷
+                Hua.injure(5, member.sound_flag)
+                pygame.time.wait(5000)
+                pygame.mouse.set_pos([Hua.rect[0], Hua.rect[1]])
+                #回復
+                screen.blit(Hua.image, Hua.rect)
+                pygame.display.update(Hua.rect)
+                member.skill_flag_pic = False
+            if member.skill_flag:
+                if member == RM:
+                    Hua.injure(5, RM.sound_flag)
+                else:
+                    Hua.scream.play()
+                member.skill_flag = False
