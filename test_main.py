@@ -34,46 +34,46 @@ def main():
     RM = Game.bts1  #破壞
     RM.screen = screen
     RM.image, RM.rect = load_image("koya.png", "main_pic")
-    RM.rect[0], RM.rect[1] = 460, 380
+    RM.rect[0], RM.rect[1] = 720, 380
     RM.skill = "Dumb: damage"
     RM.sound_flag = True
 
     Jin = Game.bts2   #冰凍
     Jin.screen = screen
     Jin.image, Jin.rect = load_image("rj.png", "main_pic")
-    Jin.rect[0], Jin.rect[1] = 530, 400
+    Jin.rect[0], Jin.rect[1] = 790, 400
     Jin.skill = load_image("ice.png", "main_pic")
 
     Suga = Game.bts3  #石化
     Suga.screen = screen
     Suga.image, Suga.rect = load_image("shooky.png", "main_pic")
-    Suga.rect[0], Suga.rect[1] = 530, 480
+    Suga.rect[0], Suga.rect[1] = 790, 480
     Suga.skill = load_image("stone.png", "main_pic")
 
     J_hope = Game.bts4   #融化
     J_hope.screen = screen
     J_hope.image, J_hope.rect = load_image("mang.png", "main_pic")
-    J_hope.rect[0], J_hope.rect[1] = 490, 520
+    J_hope.rect[0], J_hope.rect[1] = 750, 520
     J_hope.skill = load_image("flame.png", "main_pic")
     J_hope.sound_flag = True
 
     Jimin = Game.bts5   #放大
     Jimin.screen = screen
     Jimin.image, Jimin.rect = load_image("chimmy.png", "main_pic")
-    Jimin.rect[0], Jimin.rect[1] = 430, 520
+    Jimin.rect[0], Jimin.rect[1] = 690, 520
     Jimin.skill = False
 
     V = Game.bts6   #迷路
     V.screen = screen
     V.image, V.rect = load_image("tata.png", "main_pic")
-    V.rect[0], V.rect[1] = 380, 480
+    V.rect[0], V.rect[1] = 640, 480
     V.skill = "Dumb: shift"
     V.sound_flag = True
 
     Jungkook = Game.bts7  #嗜睡
     Jungkook.screen = screen
     Jungkook.image, Jungkook.rect = load_image("cooky.png", "main_pic")
-    Jungkook.rect[0], Jungkook.rect[1] = 390, 400
+    Jungkook.rect[0], Jungkook.rect[1] = 650, 400
     Jungkook.sound_flag = True
 
     BigMac = Game.npc1
@@ -86,7 +86,7 @@ def main():
     #初始位置
     #350 480
     BigMac.image, BigMac.rect = load_image("bigmac.png", "main_pic")
-    BigMac.rect[0], BigMac.rect[1] = 420, 440
+    BigMac.rect[0], BigMac.rect[1] = 680, 440
     #設置按鍵
     BigMac.up = K_UP
     BigMac.down = K_DOWN
@@ -105,7 +105,7 @@ def main():
     #初始位置
     #420 480
     HongYu.image, HongYu.rect = load_image("hongyu.png", "main_pic")
-    HongYu.rect[0], HongYu.rect[1] = 490, 440
+    HongYu.rect[0], HongYu.rect[1] = 750, 440
     HongYu.up = K_w
     HongYu.down = K_s
     HongYu.left = K_a
