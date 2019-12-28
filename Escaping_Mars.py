@@ -78,16 +78,8 @@ class Player(pygame.sprite.Sprite):
         self.pos = (160, 170)
         self.last_pos = (160, 170)
         self.dx, self.dy = None, None
-<<<<<<< HEAD
-        self.save_rect = None
-        pygame.mouse.set_pos([x, y])
-        self.rect[0], self.rect[1] = self.pos[0]-self.size_half[0], self.pos[1]-self.size_half[1]
-
-
-=======
         self.rect[0], self.rect[1] = self.pos[0]-self.size_half[0], self.pos[1]-self.size_half[1]
         pygame.mouse.set_pos([self.pos[0], self.pos[1]])
->>>>>>> 23b15f58981853b5e268da84bb6db7ceb8e2d8d7
         #設定玩家血量，然後顯示血條：調整到難易適中，還要再回來設定!!!!!!!!!
         self.blood = 300
         #長150寬20
@@ -99,16 +91,10 @@ class Player(pygame.sprite.Sprite):
         self.scream = load_sound("scream.wav")
 
     def walk(self):
-<<<<<<< HEAD
-        self.pos = pygame.mouse.get_pos()
-        self.dx, self.dy = self.pos[0]-self.last_pos[0]-self.size_half[0], self.pos[1]-self.last_pos[1]-self.size_half[1]
-        self.rect.move_ip(self.dx, self.dy)
-=======
         #self.pos = pygame.mouse.get_pos()
         #self.dx, self.dy = self.pos[0]-self.last_pos[0]-self.size_half[0], self.pos[1]-self.last_pos[1]-self.size_half[1]
         #self.rect.move_ip(self.dx, self.dy)
         self.rect[0], self.rect[1] = self.pos[0], self.pos[1]
->>>>>>> 23b15f58981853b5e268da84bb6db7ceb8e2d8d7
         '''
         #計算位置更新前後座標的大小
         #往哪邊移
@@ -155,27 +141,19 @@ class Player(pygame.sprite.Sprite):
             if self.blood > 0:
                 self.blood_surface = pygame.Surface((self.blood, 20))
                 self.blood_surface.fill((255,0,0))
-<<<<<<< HEAD
-=======
-                self.screen.blits(((self.empty_surface, (570, 50)), (self.blood_surface, (570, 50))))
+                self.screen.blits(((self.empty_surface, (570, 110)), (self.blood_surface, (570, 110))))
                 pygame.display.update(self.empty_surface.get_rect())
->>>>>>> 23b15f58981853b5e268da84bb6db7ceb8e2d8d7
                 
             else:
                 self.dead = True
     def update(self):
         #把所有東西都畫上去
         #人的部分
-<<<<<<< HEAD
-        self.draw(screen)
-        #血條的部分
-        screen.blits(((empty_surface, (500, 150)), (blood_surface, (500, 150))))
-=======
         self.screen.blit(self.image, self.rect)
+        self.screen.blit(self.bighead, self.picpos)
         #血條的部分
-        self.screen.blits(((self.empty_surface, (570, 50)), (self.blood_surface, (570, 50))))
+        self.screen.blits(((self.empty_surface, (570, 110)), (self.blood_surface, (570, 110))))
         pygame.display.update(self.rect)
->>>>>>> 23b15f58981853b5e268da84bb6db7ceb8e2d8d7
     
 class BTS(pygame.sprite.Sprite):
     '''
@@ -192,24 +170,16 @@ class BTS(pygame.sprite.Sprite):
         self.dx, self.dy = 2, 2
         self.speed = 2
         self.skill = None 
-<<<<<<< HEAD
         self.skill_flag = False
-        
-
-    def stepback(self):
-        self.move_ip(-self.dx, -self.dy)
-=======
         #要再建立維持技能的計時器!!!!!!!!
         #貼上特效再受傷!!!!!!!!!!!!!!!!!!
         self.skill_flag = False
         self.skill_flag_pic = False
         self.sound_flag = False
         self.rect.clamp_ip(pygame.Rect(0, 0, 1440, 800))
-        
 
     def stepback(self):
         self.rect.move_ip(-self.dx, -self.dy)
->>>>>>> 23b15f58981853b5e268da84bb6db7ceb8e2d8d7
 
     def change_dir(self):    
         direction = random.randint(0, 360)
@@ -221,14 +191,9 @@ class BTS(pygame.sprite.Sprite):
         self.rect.move_ip(self.dx, self.dy)
         
     def update(self):
-<<<<<<< HEAD
-        self.draw(screen)
-=======
         self.walk()
         self.screen.blit(self.image, self.rect)
         pygame.display.update(self.rect)
->>>>>>> 23b15f58981853b5e268da84bb6db7ceb8e2d8d7
-
 
 
 class NPC(pygame.sprite.Sprite):
@@ -310,22 +275,19 @@ class NPC(pygame.sprite.Sprite):
         screen.blit((random_talk.talk_bg, (self.x, self.y + 10)))
         pygame.time.wait(5000)
         #移除對話
-<<<<<<< HEAD
-'''
-    def update(self):
-        self.draw(screen)
 =======
     '''
     def update(self):
         self.screen.blit(self.image, self.rect)
+        self.screen.blit(self.bighead, self.picpos)
+        self.screen.blit(self.talk_frame, self.framepos)
         pygame.display.update(self.rect)
 
 def Resize(path, unit):
-    image = cv2,imread(path)
+    image = cv2.imread(path)
     image = cv2.resize(image, (unit,unit))
     image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
     return image
->>>>>>> 23b15f58981853b5e268da84bb6db7ceb8e2d8d7
 
 class MazeBarrier(pygame.sprite.Sprite):
 
@@ -348,6 +310,7 @@ class MazeBarrier(pygame.sprite.Sprite):
         ori_image = self.image
         quit_flag = False
         clock = pygame.time.Clock()
+        t = 0
         while not quit_flag:
             if t > 1:
                 quit_flag = True
@@ -364,16 +327,8 @@ class Maze(pygame.sprite.Sprite):
         self.image = pygame.surfarray.make_surface(np.transpose(texture, (1,0,2)))
         self.rect = pygame.Rect(position,self.texture.shape[:2])
 
-<<<<<<< HEAD
-<<<<<<< HEAD
 # 遊戲最最初始值設定，主程式一定是要先跑這個，阿然後可能還要再call NPC and BTS
-=======
->>>>>>> e065b04
-class MazeGame(Player, NPC, BTS):
-=======
 class MazeGame:
->>>>>>> 23b15f58981853b5e268da84bb6db7ceb8e2d8d7
-
     def __init__(self):
         unit = 15
         width, height = 1440, 800
@@ -393,16 +348,7 @@ class MazeGame:
         self.maze = None
         self.barriers = []
         self.exit_point = None
-<<<<<<< HEAD
-<<<<<<< HEAD
 
-=======
-        #self.NPC = NPC()
-        #self.BTS = BTS()
->>>>>>> e065b04
-=======
->>>>>>> 23b15f58981853b5e268da84bb6db7ceb8e2d8d7
-       
         # Build Maze
         with open(("maze.txt"), "r") as f:
             # Reserve space for maze

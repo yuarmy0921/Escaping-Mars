@@ -5,13 +5,6 @@ import math
 import os, sys
 from pygame.locals import *
 from pygame.compat import geterror
-<<<<<<< HEAD
-
-def main():
-    pygame.init()
-    #pygame.font.init()
-    #pygame.display.init()
-=======
 import cv2
 import numpy as np
 
@@ -19,45 +12,11 @@ def main():
     pygame.init()
     pygame.font.init()
     pygame.display.init()
->>>>>>> 23b15f58981853b5e268da84bb6db7ceb8e2d8d7
     pygame.mixer.init(channels = 6)
     screen_size = (1440, 800)
     screen = pygame.display.set_mode(screen_size)
     pygame.display.set_caption("Escaping Mars")
     quit_flag = False
-<<<<<<< HEAD
-    Game = MazeGame()
-    #--這裡是人物設定的部分--------------------------------------------------------------------------------------------------------
-
-    Hua = Game.Player()
-
-    RM = Game.BTS()   #破壞
-    RM.image, RM.rect = load_image("koya.jpg", "main_pic")
-    RM.skill = "Dumb: damage"
-    Jin = Game.BTS()   #冰凍
-    Jin.image, Jin.rect = load_image("rj.jpg", "main_pic")
-    Jin.skill = load_image("ice.png", "main_pic")
-    Suga = Game.BTS()   #石化
-    Suga.image, Suga.rect = load_image("shooky.png", "main_pic")
-    Suga.skill = load_image("stone.png", "main_pic")
-    J_hope = Game.BTS()   #融化
-    J_hope.image, J_hope.rect = load_image("mang.jpg", "main_pic")
-    J-hope.skill = load_image("flame.png", "main_pic")
-    Jimin = Game.BTS()    #放大
-    Jimin.image, Jimin.rect = load_image("chimmy.png", "main_pic")
-    Jimin.skill = False
-    V = Game.BTS()    #迷路
-    V.image, V.rect = load_image("tata.jpg", "main_pic")
-    V.skill = "Dumb: shift"
-    Jungkook = Game.BTS()   #嗜睡
-    Jungkook.image, Jungkook.rect = load_image("cooky.jpg", "main_pic")
-    Jungkook.skill = "Zzz..."
-
-    BigMac = Game.NPC()
-    #初始位置
-    BigMac.x = 
-    BigMac.y = 
-=======
     #-------------------------------------------------------------------------------------------------------------
     #這是遊戲主要部分!!!!!!!!!!!!!!
     # 重點：所有只出現一段時間的surface都要移除!!!!!!!!!!!!!!
@@ -69,6 +28,8 @@ def main():
     Hua = Game.player
     #Hua.image, Hua.rect = 
     Hua.screen = screen
+    Hua.bighead = pygame.image.load("game_material/main_pic/hua_bighead1.png")
+    Hua.picpos = (670, 5)
 
     RM = Game.bts1  #破壞
     RM.screen = screen
@@ -117,70 +78,46 @@ def main():
 
     BigMac = Game.npc1
     BigMac.screen = screen
+    BigMac.bighead = pygame.image.load("game_material/main_pic/bigmac_bighead1.png")
+    BigMac.picpos = (1335, 5)
+    BigMac.talk_frame = load_image("bigmac_talk_frame.png", "main_pic")
+    BigMac.talk_frame = BigMac.talk_frame[0]
+    BigMac.framepos = (1025, 30)
     #初始位置
     #350 480
     BigMac.image, BigMac.rect = load_image("bigmac.png", "main_pic")
     BigMac.rect[0], BigMac.rect[1] = 420, 440
     #設置按鍵
->>>>>>> 23b15f58981853b5e268da84bb6db7ceb8e2d8d7
     BigMac.up = K_UP
     BigMac.down = K_DOWN
     BigMac.left = K_LEFT
     BigMac.right = K_RIGHT
     #一個surface物件的LIST
-<<<<<<< HEAD
-    BigMac.alltalk = [NPC.talk_font.render(), NPC.talk_font.render(), NPC.talk_font.render()]
-    BigMac.healing = K_h
-
-    HongYu = Game.NPC()
-    #初始位置
-    HongYu.x = 
-    HongYu.y = 
-=======
     #BigMac.alltalk = [NPC.talk_font.render(), NPC.talk_font.render(), NPC.talk_font.render()]
 
     HongYu = Game.npc2
     HongYu.screen = screen
+    HongYu.picpos = (5, 5)
+    HongYu.bighead = pygame.image.load("game_material/main_pic/hongyu_bighead1.png")
+    HongYu.talk_frame = load_image("hongyu_talk_frame.png", "main_pic")
+    HongYu.talk_frame = HongYu.talk_frame[0]
+    HongYu.framepos = (115, 30)
     #初始位置
     #420 480
     HongYu.image, HongYu.rect = load_image("hongyu.png", "main_pic")
     HongYu.rect[0], HongYu.rect[1] = 490, 440
->>>>>>> 23b15f58981853b5e268da84bb6db7ceb8e2d8d7
     HongYu.up = K_w
     HongYu.down = K_s
     HongYu.left = K_a
     HongYu.right = K_d
-<<<<<<< HEAD
-    HongYu.alltalk = [NPC.talk_font.render("你確定你有搞懂自己在幹嘛嗎？", True, (0, 0, 0)), NPC.talk_font.render("唉...", True, (0, 0, 0)), NPC.talk_font.render()]
-    HongYu.healing = K_c
-    #障礙物和人分開處理
-    NPC_group = pygame.sprite.Group(HongYu, BigMac)
-    BTS_group = pygame.sprite.Group(RM, Jin, Suga, J_hope, Jimin, V, Jungkook)
-
-    barriers = Game.barrier_group
-=======
     #HongYu.alltalk = [NPC.talk_font.render("你確定你有搞懂自己在幹嘛嗎？", True, (0, 0, 0)), NPC.talk_font.render("唉...", True, (0, 0, 0)), NPC.talk_font.render()]
     #障礙物和人分開處理
     NPC_group = pygame.sprite.Group(HongYu, BigMac)
     BTS_group = pygame.sprite.Group(RM, Jin, Suga, J_hope, Jimin, V, Jungkook)
->>>>>>> 23b15f58981853b5e268da84bb6db7ceb8e2d8d7
     
     #--音樂還有背景的部分--------------------------------------------------------------------------------------------------------------
     main_bg = load_image("mars.jpg", "main_pic")
     #把喜歡的歌都放進來吧!!!
-<<<<<<< HEAD
-    main_bgm_list = ["epiphany", "fake_love", "make_it_right",  "save_me", "tomorrow"]
-    for i in range(0, len(main_bgm_list)-1):
-        main_bgm_list[i] = load_sound(main_bgm[i]+".wav")
-
-    #--------------------------------------------------------------------------------------------------------------------------
-
-    main_bgm = game.main_bgm_list[random.randint(0, len(game.main_bgm_list)-1)]
-    main_bgm_channel = main_bgm.play()
-    while True:   #這裡的條件還要再另外設定!!!!!!!!!!!!!!!
-        if not main_bgm_channel.get_busy():
-            main_bgm = game.main_bgm[random.randint(0, len(game.main_bgm_list)-1)]
-=======
     main_bgm_list = ["epiphany", "fake_love", "make_it_right", "save_me", "tomorrow"]
     for i in range(0, len(main_bgm_list)):
         main_bgm_list[i] = load_sound(main_bgm_list[i]+".wav")
@@ -193,13 +130,12 @@ def main():
     main_bgm = main_bgm_list[random.randint(0, len(main_bgm_list)-1)]
     main_bgm_channel = main_bgm.play()
     screen.blit(maze.image, maze.rect)
-    screen.blits(((Hua.empty_surface, (570, 50)), (Hua.blood_surface, (570, 50))))
+    screen.blits(((Hua.empty_surface, (570, 110)), (Hua.blood_surface, (570, 110))))
     screen.blits(((Hua.image, Hua.rect), (BigMac.image, BigMac.rect), (HongYu.image, HongYu.rect), (RM.image, RM.rect), (Jin.image, Jin.rect), (Suga.image, Suga.rect), (J_hope.image, J_hope.rect), (Jimin.image, Jimin.rect), (V.image, V.rect), (Jungkook.image, Jungkook.rect)))
     pygame.display.flip()
     while True:   #這裡的條件還要再另外設定!!!!!!!!!!!!!!!
         if not main_bgm_channel.get_busy():
             main_bgm = main_bgm_list[random.randint(0, len(main_bgm_list)-1)]
->>>>>>> 23b15f58981853b5e268da84bb6db7ceb8e2d8d7
             main_bgm_channel = main_bgm.play()
         
         #所有事件：上下左右、治療、滑鼠移動(使用道具)
@@ -208,45 +144,6 @@ def main():
         #在一次loop內可能有多個按鍵按下，所以要用for event in pygame.event.get()
         #先移動再判斷有沒有碰到
         #這個部分先處理玩家操作，判斷的部分是後面
-
-<<<<<<< HEAD
-        #玩家移動滑鼠的情況
-        Hua.walk()
-
-        # NPC的情況
-        for event in pygame.event.get():
-            if event.type==pygame.QUIT :
-                pygame.quit()
-            if event.type == KEYDOWN:
-                # 這裡是大麥控制
-                if event == BigMac.up:
-                    BigMac.Up()
-                elif event == BigMac.down:
-                    BigMac.Down()
-                elif event == BigMac.left:
-                    BigMac.Left()
-                elif event == BigMac.right:
-                    BigMac.Right()
-                elif event == BigMac.healing:
-                    BigMac.healflag = True
-
-                # 這裡是宏宇控制
-                elif event == HongYu.up:
-                    HongYu.Up()
-                elif event == HongYu.down:
-                    HongYu.Down()
-                elif event == HongYu.left:
-                    HongYu.Left()
-                elif event == HongYu.right:
-                    HongYu.Right()
-                elif event == HongYu.healing:
-                    HongYu.healflag = True
-                else:
-                    pass
-
-            # 玩家使用道具的情況，先略過!!!!!!!!!!!!!!!!!!!!!!
-            #if event.type == MOUSEBUTTONDOWN:
-=======
         
 
         # NPC的情況
@@ -289,21 +186,16 @@ def main():
             print("Bigmac position:", BigMac.rect)
             # 玩家使用道具的情況，先略過!!!!!!!!!!!!!!!!!!!!!!
             #if event.type == MOUSEBUTTONDOWN:
-            
->>>>>>> 23b15f58981853b5e268da84bb6db7ceb8e2d8d7
 
         #寶貝移動的情況
         for member in BTS_group:
             member.walk()
-<<<<<<< HEAD
-=======
 
         #把圖片技能圖片換回來:
         if Hua.image != Hua.save_image:
             Hua.image = Hua.save_image
             screen.blit(Hua.image, Hua.rect)
             pygame.display.update(Hua.rect)
->>>>>>> 23b15f58981853b5e268da84bb6db7ceb8e2d8d7
         #這裡都在判斷碰撞 !!!!!!!!!!!!!!!!!--------------------------------------------------------------------------------------
         #碰撞的情形
         #玩家 障礙物/BTS/NPC
@@ -311,14 +203,6 @@ def main():
         #NPC NPC/障礙物
 
         #玩家碰撞到東西
-<<<<<<< HEAD
-        #先後退
-        #障礙物
-        if len(pygame.sprite.spritecollide(Hua, barriers)) > 0:
-            Hua.stepback()
-            Hua.injure(len(pygame.sprite.spritecollide(Hua, barriers)))
-            barriers.fire(Hua)
-=======
         hua_barrier = pygame.sprite.spritecollide(Hua, barriers, False)
         hua_bts = pygame.sprite.spritecollide(Hua, BTS_group, False)
         hua_npc = pygame.sprite.spritecollide(Hua, NPC_group, False)
@@ -335,113 +219,9 @@ def main():
                 barrier.fire()
             hua_barrier = []
 
->>>>>>> 23b15f58981853b5e268da84bb6db7ceb8e2d8d7
-
         #BTS
         #放技能
         #玩家受傷(傳入受傷次數)
-<<<<<<< HEAD
-        if len(pygame.sprite.spritecollide(Hua, BTS_group, False)) > 0:  
-            for member in pygame.sprite.spritecollide(Hua, BTS_group, False):
-                if member == RM:
-                    #破壞
-                    member.stepback()
-                    Hua.injure(5, True)
-                elif member == Jin:
-                    #冰凍
-                    member.stepback()
-                    size_surf = pygame.Surface((Hua.rect[2], Hua.rect[3]))
-                    size_surf.blit(Jin.skill[0], (0, 0))
-                    #左上角
-                    screen.blit(size_surf, (self.rect[0], self.rect[1]))
-                    Hua.injure(5, False)
-                    #把人貼回去
-                    Hua.draw(screen)
-                elif member == Suga:
-                    #石化
-                    member.stepback()
-                    size_surf = pygame.Surface((Hua.rect[2], Hua.rect[3]))
-                    size_surf.blit(Suga.skill[0], (0, 0))
-                    #左上角
-                    screen.blit(size_surf, (self.rect[0], self.rect[1]))
-                    Hua.injure(5, False)
-                    #把人貼回去
-                    Hua.draw(screen)
-                elif member == J_hope:
-                    #燃燒
-                    member.stepback()
-                    size_surf.blit(J_hope.skill[0], (0, 0))
-                    #左上角
-                    screen.blit(size_surf, (self.rect[0], self.rect[1]))
-                    Hua.injure(5, False)
-                    #把人貼回去
-                    Hua.draw(screen)
-                elif member == Jimin:
-                    #放大
-                    member.stepback()
-                    Jimin.skill = True
-                    Hua.image.inflate(1.5, 1.5)
-                elif member == V:
-                    #瞬移
-                    member.stepback()
-                    Hua.rect[0], Hua.rect[1] = ("起點座標'!!!!!!!")
-
-                elif member == Jungkook:
-                    #單純的小孩
-                    member.stepback()
-
-                else:
-                    pass
-
-
-        #NPC
-        if len(pygame.sprite.spritecollide(Hua, NPC_group, False)) > 0:
-            for member in pygame.sprite.spritecollide(Hua, NPC_group, False):
-                member.stepback()
-                if member.healflag:
-                    #member.trash_talk()
-                    Hua.recover()
-                else:
-                    pass
-
-
-        #BTS碰撞到東西
-        #互相
-        if RM.colliderect(Jin.rect) or RM.colliderect(Suga.rect) or RM.colliderect(J_hope.rect) or RM.colliderect(Jimin.rect) or RM.colliderect(V.rect) or RM.colliderect(Jungkook.rect):
-            RM.stepback()
-        if Jin.colliderect(Suga.rect) or Jin.colliderect(J_hope.rect) or Jin.colliderect(Jimin.rect) or Jin.colliderect(V.rect) or Jin.colliderect(Jungkook.rect):
-            Jin.stepback()
-        if Suga.colliderect(J_hope.rect) or Suga.colliderect(Jimin.rect) or Suga.colliderect(V.rect) or Suga.colliderect(Jungkook.rect):
-            Suga.stepback()
-        if J_hope.colliderect(Jimin.rect) or J_hope.colliderect(V.rect) or J_hope.colliderect(Jungkook.rect):
-            J_hope.stepback()
-        if Jimin.colliderect(V.rect) or Jimin.colliderect(Jungkook.rect):
-            Jimin.stepback()
-        if V.colliderect(Jungkook.rect):
-            V.stepback()
-
-
-        #障礙物
-        if len(pygame.sprite.groupcollide(BTS_group, barriers, False)) > 0:
-            for member in pygame.sprite.groupcollide(BTS_group, barriers, False):
-                member.stepback()
-                member.change_dir()
-
-        #NPC
-        if len(pygame.sprite.groupcollide(NPC_group, BTS_group, False)) > 0:
-            for member in pygame.sprite.groupcollide(NPC_group, BTS_group, False):
-                member.stepback()
-
-        #NPC碰撞到東西
-        #互相
-        if BigMac.colliderect(HongYu.rect):
-            BigMac.stepback()
-
-        #障礙物
-        if len(pygame.sprite.groupcollide(NPC_group, barriers, False)) > 0:
-            for member in pygame.sprite.groupcollide(NPC_group, barriers, False):
-                member.stepback()
-=======
         if len(hua_bts) > 0:  
             for member in hua_bts:
                 if member == RM:
@@ -538,18 +318,13 @@ def main():
             for member in npc_barrier:
                 member.stepback()
             npc_barrier = []
->>>>>>> 23b15f58981853b5e268da84bb6db7ceb8e2d8d7
-        
 
         #########儲存上一個位置：判斷後退和移動
         Hua.last_pos = pygame.mouse.get_pos()
-<<<<<<< HEAD
-        self.last_pos = (self.rect[0], self.rect[1])
-=======
         Hua.rect[0], Hua.rect[1] = Hua.last_pos[0], Hua.last_pos[1]
         screen.blit(main_bg[0], main_bg[1])
         screen.blit(maze.image, maze.rect)
-        screen.blits(((Hua.empty_surface, (570, 50)), (Hua.blood_surface, (570, 50))))
+        screen.blits(((Hua.empty_surface, (570, 110)), (Hua.blood_surface, (570, 110))))
         pygame.display.flip()
         BTS_group.update()
         NPC_group.update()
@@ -583,7 +358,6 @@ def main():
         #print(pygame.mouse.get_pos())
         #print(Hua.last_pos)
         #print(Hua.pos)
->>>>>>> 23b15f58981853b5e268da84bb6db7ceb8e2d8d7
         #------------------------------------------------------------------------------------------------------------------------------
         pygame.display.update()
         #判斷死了沒
@@ -597,13 +371,9 @@ def main():
             pygame.time.wait(5000)
             break
 
-<<<<<<< HEAD
-        #判斷過關
-        if :
-=======
+
         #判斷過關!!!!!!!!!!!!!!!!!!!!!!!!!!!
         if Hua.rect[0] > Hua.finish[0] and Hua.rect[1] > Hua.finish[1]:
->>>>>>> 23b15f58981853b5e268da84bb6db7ceb8e2d8d7
             applause = load_sound("applause.wav")
             success_flag = True
             fail_flag = False
@@ -612,9 +382,6 @@ def main():
             applause.play()
             pygame.time.wait(5000)
             break
-<<<<<<< HEAD
-    
-=======
     next = False
     while True:
         for event in pygame.event.get():
@@ -624,8 +391,6 @@ def main():
         if next:
             next = False
             break
->>>>>>> 23b15f58981853b5e268da84bb6db7ceb8e2d8d7
-
 #-------------------------------------------------------------------------------------------------------------
     #這是過關畫面!!!!!!!
     color = (255, 255, 255)
@@ -653,10 +418,7 @@ def main():
                 next = False
                 break
         success_music.stop()
-<<<<<<< HEAD
-=======
         pygame.quit()
->>>>>>> 23b15f58981853b5e268da84bb6db7ceb8e2d8d7
 #--------------------------------------------------------------------------------------------------------------
     #這是失敗畫面QQ
     while fail_flag:
@@ -686,13 +448,6 @@ def main():
         
         while True:
             for event in pygame.event.get():
-<<<<<<< HEAD
-                if event.type == MOUSEBUTTONDOWN:
-                    next = True
-            if next:
-                break
-        fail_music.stop()
-=======
                 if event.type == KEYDOWN:
                     next = True
             if next:
@@ -701,4 +456,3 @@ def main():
         pygame.quit()
 #-------------------------------------------------------------------------------------------------
 main()
->>>>>>> 23b15f58981853b5e268da84bb6db7ceb8e2d8d7
