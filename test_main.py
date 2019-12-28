@@ -93,7 +93,7 @@ def main():
     BigMac.left = K_LEFT
     BigMac.right = K_RIGHT
     #一個surface物件的LIST
-    #BigMac.alltalk = [NPC.talk_font.render(), NPC.talk_font.render(), NPC.talk_font.render()]
+    #BigMac.alltalk = [NPC.talk_font.render(""), NPC.talk_font.render(), NPC.talk_font.render()]
 
     HongYu = Game.npc2
     HongYu.screen = screen
@@ -215,8 +215,8 @@ def main():
                 #print(item)
             Hua.stepback()
             Hua.injure(len(hua_barrier), True)
-            for barrier in barriers:
-                barrier.fire()
+            #for barrier in barriers:
+            #barrier.fire()
             hua_barrier = []
 
         #BTS

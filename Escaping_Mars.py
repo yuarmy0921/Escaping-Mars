@@ -207,7 +207,6 @@ class NPC(pygame.sprite.Sprite):
         self.screen = None
         self.image, self.rect = pygame.surface.Surface((10, 10)), pygame.Rect(0, 0, 10, 10)
         self.rect.clamp_ip(pygame.Rect(0, 0, 1440, 800))
-        self.save_image = None
         self.size = (self.rect[2], self.rect[3])
         self.speed = 10
         self.up = None
@@ -249,34 +248,27 @@ class NPC(pygame.sprite.Sprite):
         else:
             pass
     
-    '''
     def trash_talk(self):
-        
+        '''
         碰到玩家
         講一些幹話
-        
-        class Talk(pygame.sprite.Sprite):
-            def __init__(self, talk):
-                pygame.sprite.Sprite.__init__(self)
-                #從一群對話中隨機選出一句，對話放頭上(名字以上)，決定適當的距離!!!!!!!!!!
-                self.talk = talk
-                #convert()：建立副本
-                self.talk = self.talk.convert()
-                #文字框根據對話的長度來決定
-                self.talk_bg = pygame.Surface((self.talk.get_width(), self.talk.get_height()))
-                self.talk_bg.fill((255, 255, 255))
-                self.talk_bg = self.talk_bg.convert()
-                self.talk_bg.blit(self.talk, (0, 0))
-                self.image, self.rect = self.talk_bg, 
+        '''
+        #從一群對話中隨機選出一句，對話放頭上(名字以上)，決定適當的距離!!!!!!!!!!
+        self.talk = talk
+        #convert()：建立副本
+        self.talk = self.talk.convert()
+        #文字框根據對話的長度來決定
+        self.talk_bg = pygame.Surface((self.talk.get_width(), self.talk.get_height()))
+        self.talk_bg.fill((255, 255, 255))
+        self.talk_bg = self.talk_bg.convert()
+        self.talk_bg.blit(self.talk, (0, 0))
+        self.image, self.rect = self.talk_bg, 
         #建立計時器，維持幾秒
         #先這樣!!!!!!!!!!!!!!!!!!
         random_talk = self.alltalk[random.randint(0, len(self.alltalk)-1)]
-        random_talk = pygame.sprite.GroupSingle(Talk(random_talk))
         screen.blit((random_talk.talk_bg, (self.x, self.y + 10)))
         pygame.time.wait(5000)
         #移除對話
-=======
-    '''
     def update(self):
         self.screen.blit(self.image, self.rect)
         self.screen.blit(self.bighead, self.picpos)
@@ -332,7 +324,7 @@ class MazeGame:
     def __init__(self):
         unit = 15
         width, height = 1440, 800
-        maze_width, maze_height = 1140, 650
+        maze_width, maze_height = 1440, 650
 
         # The following attributes will be initialized later
         self.player = Player()
@@ -350,7 +342,7 @@ class MazeGame:
         self.exit_point = None
 
         # Build Maze
-        with open(("maze.txt"), "r") as f:
+        with open(("maze(revised).txt"), "r") as f:
             # Reserve space for maze
             lines = f.read().strip("\n").split("\n") # Read the map
             maze = np.zeros((height, width, 3))

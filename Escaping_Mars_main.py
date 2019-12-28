@@ -87,7 +87,7 @@ def main():
     instruct3 = instruct_font.render("3. NPC們都是善良的天使，雖然可能受到精神傷害(", True, (255, 255, 255))
     instruct3_1 = instruct_font.render("   之後就知道為什麼是精神傷害了XD)但必要時還是", True, (255, 255, 255))
     instruct3_2 = instruct_font.render("   向他們求救吧！", True, (255, 255, 255))
-    instruct4 = instruct_font.render("4. 在限制時間內保留至少一滴血走到終點", True, (255, 255, 255))
+    instruct4 = instruct_font.render("4. 保留至少一滴血走到終點", True, (255, 255, 255))
     instruct5 = instruct_font.render("5. 遊戲愉快:D", True, (255, 255, 255))
     
     instruct_set1 = [instruct1, instruct2, instruct2_1, instruct3]
@@ -310,12 +310,8 @@ def main():
                     Hua.image.inflate(1.2, 1.2)
                 elif member == V:
                     #瞬移
-<<<<<<< HEAD
-                    member.stepback()
-=======
                     Hua.stepback()
                     member.skill_flag = True
->>>>>>> 23b15f58981853b5e268da84bb6db7ceb8e2d8d7
                     Hua.rect[0], Hua.rect[1] = ("起點座標'!!!!!!!")
 
                 elif member == Jungkook:
@@ -379,9 +375,6 @@ def main():
         #########儲存上一個位置：判斷後退和移動
         Hua.last_pos = pygame.mouse.get_pos()
         self.last_pos = (self.rect[0], self.rect[1])
-
-<<<<<<< HEAD
-=======
         #判斷有沒有碰到成員()
         for member in BTS_group:
             if member.skill_flag_pic:
@@ -399,8 +392,6 @@ def main():
                 else:
                     Hua.scream.play()
                 member.skill_flag = False
-
->>>>>>> 23b15f58981853b5e268da84bb6db7ceb8e2d8d7
         #貼上
         Hua.update()
         BTS_group.update()
@@ -419,11 +410,7 @@ def main():
             break
 
         #判斷過關!!!!!!!!!!!!!!!!!!!!!!!!!!!
-<<<<<<< HEAD
-        if :
-=======
         if Hua.rect[0] > 1240 and Hua.rect[1] > 770:
->>>>>>> 23b15f58981853b5e268da84bb6db7ceb8e2d8d7
             applause = load_sound("applause.wav")
             success_flag = True
             fail_flag = False
