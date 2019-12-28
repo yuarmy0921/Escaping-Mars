@@ -364,7 +364,7 @@ class MazeGame:
                 for col, symbol in enumerate(line):
                     if symbol == '0': # 障礙物
                         # Create barrier
-                        barrier = MazeBarrier((col*unit, row*unit),row,col,unit,maze,75,0)
+                        barrier = MazeBarrier((col*unit, x*2+row*unit),row,col,unit,maze,75,0)
                         self.barriers.append(barrier)
                     elif symbol == '1': # 路，不需要load image，用背景即可
                         pass
