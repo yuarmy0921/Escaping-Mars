@@ -27,7 +27,7 @@ class MazeGame:
     def __init__(self):
         unit = 15
         width, height = 1440, 800
-        maze_width, maze_height = 1140, 650
+        maze_width, maze_height = 1440, 650
 
         # The following attributes will be initialized later
         self.maze = None
@@ -37,7 +37,7 @@ class MazeGame:
         #self.BTS = BTS()
        
         # Build Maze
-        with open(("maze.txt"), "r") as f:
+        with open(("maze(revised).txt"), "r") as f:
             # Reserve space for maze
             lines = f.read().strip("\n").split("\n") # Read the map
             maze = np.zeros((height, width, 3))
@@ -50,6 +50,7 @@ class MazeGame:
             bg = cv2.cvtColor(bg, cv2.COLOR_BGR2RGB)
             bg = cv2.resize(bg, (maze_width, maze_height))
             x, y = (height - maze_height)//2, (width - maze_width)//2
+            print(x, y)
             maze[x*2:x*2+maze_height, y:y+maze_width, :] = bg
             # 左上角：(150, 75)
 

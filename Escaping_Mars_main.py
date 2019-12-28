@@ -73,7 +73,7 @@ def main():
         for event in pygame.event.get():  #等待(還沒按下按鍵則在這個loop裡面停留)
             if event.type == MOUSEBUTTONDOWN:
                 next = True
-                 break
+                break
         if next:
             next = False
             break
@@ -152,8 +152,8 @@ def main():
 
     J_hope = Game.BTS()   #融化
     J_hope.image, J_hope.rect = load_image("mang.png", "main_pic")
-    J_hope.rect[0], J-hope.rect[1] = 440, 530
-    J-hope.skill = load_image("flame.png", "main_pic")
+    J_hope.rect[0], J_hope.rect[1] = 440, 530
+    J_hope.skill = load_image("flame.png", "main_pic")
     J_hope.sound_flag = True
 
     Jimin = Game.BTS()    #放大

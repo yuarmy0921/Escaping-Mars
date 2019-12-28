@@ -293,7 +293,7 @@ class MazeBarrier(pygame.sprite.Sprite):
         self.image = pygame.surfarray.make_surface(np.transpose(barrier_image ,(1,0,2)))
         self.rect = pygame.Rect(position, barrier_image.shape[:2])
 
-        fire_image = Resize("./game_material/main_pic/fire.png", self.unit)
+        fire_image = Resize("./game_material/main_pic/fire.png",self.unit)
         self.fire_image = pygame.surfarray.make_surface(np.transpose(fire_image, (1,0,2)))
         self.fire_rect = self.rect.copy()
     
@@ -322,7 +322,7 @@ class Maze(pygame.sprite.Sprite):
 # 遊戲最最初始值設定，主程式一定是要先跑這個，阿然後可能還要再call NPC and BTS
 class MazeGame:
     def __init__(self):
-        unit = 15
+        unit = 10
         width, height = 1440, 800
         maze_width, maze_height = 1440, 650
 
@@ -355,7 +355,7 @@ class MazeGame:
             bg = cv2.cvtColor(bg, cv2.COLOR_BGR2RGB)
             bg = cv2.resize(bg, (maze_width, maze_height))
             x, y = (height - maze_height)//2, (width - maze_width)//2
-            maze[x*2:x*2+maze_height, y:y+maze_width, :] = bg
+            maze[0:maze_height, y:y+maze_width, :] = bg
             # 左上角：(150, 75)
 
             # Initialize maze row by row
