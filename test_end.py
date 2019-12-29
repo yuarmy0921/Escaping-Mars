@@ -45,85 +45,65 @@ def load_sound(name):
 def main():
     pygame.init()
     screen = pygame.display.set_mode((1440, 800))
-    class Ending(pygame.sprite.Sprite):
-        def __init__(self):
-            pygame.sprite.Sprite.__init__(self)
-            self.image = None 
-            self.rect = None
     ending_music = load_sound("magic_shop.wav")
     ending_bg = load_image("mars.jpg", "ending_pic")
     screen.blit(ending_bg[0], (0, 0))
     pygame.display.flip()
     ending_music.play(-1)
     #-----------------------------------------------------------------------------
-    color = (255, 255, 255)
-    title_font = pygame.font.Font("game_material/font/HanaMin/HanaMinA.ttf", 20)
-    title_font.set_bold(True)
-    content_font = pygame.font.Font("game_material/font/HanaMin/HanaMinA.ttf", 15)
-    content_font.set_bold(True)
-    t1 = Ending()
-    t1.image = title_font.render("GUI Design", True, color)
-    t1.rect = t1.image.get_rect()
-
-    c1 = Ending()
-    c1.image = content_font.render("林郁敏", True, color)
-    c1.rect = c1.image.get_rect()
-
-    t2 = Ending()
-    t2.image = title_font.render("Game Configuration Construction", True, color)
-    t2.rect = t2.image.get_rect()
-
-    c2 = Ending()
-    c2.image = content_font.render("林郁敏", True, color)
-    c2.rect = c2.image.get_rect()
-
-    t3 = Ending()
-    t3.image = title_font.render("Characters Design", True, color)
-    t3.rect = t3.image.get_rect()
-
-    c3 = Ending()
-    c3.image = content_font.render("林郁敏", True, color)
-    c3.rect = c3.image.get_rect()
-
-    t4 = Ending()
-    t4.image = title_font.render("Character Image", True, color)
-    t4.rect = t4.image.get_rect()
-
-    c4 = Ending()
-    c4.image = content_font.render("BT21 by LINE Corporation", True, color)
-    c4.rect = c4.image.get_rect()
-
-    t5 = Ending()
-    t5.image = title_font.render("Maze Design", True, color)
-    t5.rect = t5.image.get_rect()
-
-    c5 = Ending()
-    c5.image = content_font.render("張悅恩", True, color)
-    c5.rect = c5.image.get_rect()
-
-    t6 = Ending()
-    t6.image = title_font.render("Background Music", True, color)
-    t6.rect = t6.image.get_rect()
-
-    c6 = Ending()
-    c6.image = content_font.render("BTS-Sea    BTS-So far away    BTS-Epiphany    BTS-Magic shop    BTS-Mikrokosmos    BTS-Make it right    BTS-Tomorrow    BTS-Save ME", True, color)
-    c6.rect = c6.image.get_rect()
-
-    t7 = Ending()
-    t7.image = title_font.render("Special THANKS TO", True, color)
-    t7.rect = t7.image.get_rect()
-
-    c7 = Ending()
-    c7.image = content_font.render("林宗男 教授     顏宏宇 助教     劉正仁 助教     劉玟慶 助教     郭育昇 助教", True, color)
-    c7.rect = c7.image.get_rect()
-
-    ending = Ending()
-    ending.image = content_font.render("All rights reserved", True, color)
-    ending.rect = ending.image.get_rect()
-
-    #
-    text = [t1, c1, t2, c2, t3, c3, t4, c4, t5, c5, t6, c6, t7, c7, ending]
+    class Title(pygame.sprite.Sprite):
+        def __init__(self, title):
+            pygame.sprite.Sprite.__init__(self)
+            title_font = pygame.font.Font("game_material/font/HanaMin/HanaMinA.ttf", 20)
+            title_font.set_bold(True)
+            self.image = title_font.render(title, True, (255, 255, 255))
+            self.rect = self.image.get_rect()
+    class Content(pygame.sprite.Sprite):
+        def __init__(self, content):
+            pygame.sprite.Sprite.__init__(self)
+            content_font = pygame.font.Font("game_material/font/HanaMin/HanaMinA.ttf", 15)
+            self.image = content_font.render(content, True, (255, 255, 255))
+            self.rect = self.image.get_rect()
+    ending_music = load_sound("magic_shop.wav")
+    ending_bg = load_image("mars.jpg", "main_pic")
+    screen.blit(ending_bg[0], (0, 0))
+    pygame.display.flip()
+    ending_music.play(-1)
     
+    t1 = Title("Team Member")
+    c1 = Content("張悅恩   林郁敏")
+    
+    t2 = Title("GUI Design")
+    c2 = Content("林郁敏")
+
+    t3 = Title("Game Configuration Construction")
+    c3 = Content("林郁敏")
+
+    t4 = Title("Character Code")
+    c4 = Content("林郁敏")
+
+    t5 = Title("Maze Code")
+    c5 = Content("張悅恩")
+
+    t6 = Title("Maze Design")
+    c6 = Content("張悅恩")
+
+    t7 = Title("Material Resources")
+    c7_1 = Content("Character images(BTS): BT21 Copyright © LINE Corporation All rights reserved")
+    c7_2 = Content("Character image(Hua Chen Yu): https://zhidao.baidu.com/question/525270507842709245.html")
+    c7_3 = Content("Dialogue frame: Vector Designed By Windy from https://zh.pikbest.com/graphic-elements/hand-drawn-info-box-dialog-design-elements_1151025.html")
+    c7_4 = Content("Background picture(success): BTS official facebook")
+    c7_5 = Content("Background picture(fail)")
+
+    t8 = Title("Background Music")
+    c8 = Content("BTS-Sea    BTS-So far away    BTS-Epiphany    BTS-Magic shop    BTS-Mikrokosmos    BTS-Make it right    BTS-Tomorrow    BTS-Save ME")
+    
+    t9 = Title("Special THANKS TO")
+    c9 = Content("林宗男 教授     顏宏宇 助教     劉正仁 助教     劉玟慶 助教     郭育昇 助教")
+    ending = Content("All rights reserved")
+    #
+    text = [t1, c1, t2, c2, t3, c3, t4, c4, t5, c5, t6, c6, t7, c7_1, c7_2, c7_3, c7_4, c7_5, t8, c8, t9, c9, ending]
+
     
     y = 100
     judge = False
@@ -132,7 +112,10 @@ def main():
         #print(sentence.rect[0], sentence.rect[1])
         if not judge:
             y += 50
-            judge = True
+            if 1050 <= y <= 1200:
+                judge = False
+            else:
+                judge = True
         else:
             y += 100
             judge = False

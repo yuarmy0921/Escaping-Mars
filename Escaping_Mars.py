@@ -147,6 +147,8 @@ class Player(pygame.sprite.Sprite):
                 pygame.display.update(self.bloodrect)
                 
             else:
+                self.screen.blit(self.empty_surface, self.bloodrect)
+                pygame.display.update(self.bloodrect)
                 self.dead = True
     def update(self):
         #把所有東西都畫上去
