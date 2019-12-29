@@ -313,22 +313,6 @@ class MazeBarrier(pygame.sprite.Sprite):
         self.fire_image = pygame.surfarray.make_surface(np.transpose(fire_image, (1,0,2)))
         self.fire_rect = self.rect.copy()
         self.screen = pygame.surface.Surface((10, 10))
-    
-    def fire(self):
-        # 每一個障礙物都會燒起來！
-        ori_image = self.image
-        quit_flag = False
-        clock = pygame.time.Clock()
-        t = 0
-        while not quit_flag:
-            if t > 1:
-                quit_flag = True
-            clock.tick(30)
-            self.image = self.fire_image.subsurface(self.fire_rect)
-            self.screen.blit(self.image, self.rect)
-            pygame.display.update(self.rect)
-            t += 1
-        self.image = ori_image
      
 class Maze(pygame.sprite.Sprite):
 

@@ -254,7 +254,7 @@ def main():
 
         # NPC的情況
         for event in pygame.event.get():
-            print(event)
+            """print(event)"""
             #print(Hua.pos)
             #print(Hua.last_pos)
             if event.type == pygame.QUIT :
@@ -269,7 +269,7 @@ def main():
                 # 這裡是大麥控制
                 if event.key == K_UP:       
                     BigMac.Up()
-                    print("Previous:", BigMac.prev)
+                    """print("Previous:", BigMac.prev)"""
                 elif event.key == BigMac.down:
                     BigMac.Down()
                 elif event.key == BigMac.left:
@@ -290,7 +290,7 @@ def main():
                     pass
             else:
                 pass  
-            print("Bigmac position:", BigMac.rect)
+            """print("Bigmac position:", BigMac.rect)"""
             # 玩家使用道具的情況，先略過!!!!!!!!!!!!!!!!!!!!!!
             #if event.type == MOUSEBUTTONDOWN:
 
@@ -322,8 +322,6 @@ def main():
                 #print(item)
             Hua.stepback()
             Hua.injure(len(hua_barrier), True)
-            #for barrier in barriers:
-                #barrier.fire()
             screen.blit(main_bg[0], main_bg[1])
             screen.blit(maze.image, maze.rect)
             screen.blits(((Hua.empty_surface, (570, 110)), (Hua.blood_surface, (570, 110))))
@@ -502,9 +500,9 @@ def main():
 
         #判斷過關!!!!!!!!!!!!!!!!!!!!!!!!!!!
         Hua.last_pos = pygame.mouse.get_pos()
-        print(Hua.last_pos)
+        """print(Hua.last_pos)"""
         Hua.rect[0], Hua.rect[1] = Hua.last_pos
-        print("finish:", Hua.rect)
+        """print("finish:", Hua.rect)"""
         if Hua.rect[0] > Hua.finish[0] and Hua.rect[1] > Hua.finish[1]:
             applause = load_sound("applause.wav")
             success_flag = True
