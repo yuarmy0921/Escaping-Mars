@@ -10,6 +10,7 @@ from pygame.locals import *
 from pygame.compat import geterror
 #pygame.image.load()預設得到的type是surface
 #pygame.sprite.Group.update：call the update method
+
 def load_image(name, prev, colorkey = None):
     '''
     把圖片載下來
@@ -299,7 +300,7 @@ def Resize(path, unit):
 
 class MazeBarrier(pygame.sprite.Sprite):
 
-    def __init__(self, position, row, col, unit, maze, x,y): # position是傳進行與列
+    def __init__(self, position, row, col, unit, maze, x,y): 
         super().__init__()
         self.position = position
         self.unit = unit
@@ -322,7 +323,7 @@ class Maze(pygame.sprite.Sprite):
         self.image = pygame.surfarray.make_surface(np.transpose(texture, (1,0,2)))
         self.rect = pygame.Rect(position,self.texture.shape[:2])
 
-# 遊戲最最初始值設定，主程式一定是要先跑這個，阿然後可能還要再call NPC and BTS
+# 遊戲最最初始值設定，主程式一定是要先跑這個，阿然後還要再call NPC and BTS
 class MazeGame:
     def __init__(self):
         unit = 10
