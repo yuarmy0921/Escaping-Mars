@@ -73,10 +73,10 @@ class Player(pygame.sprite.Sprite):
         #初始位置
         #因為是滑鼠所以要這樣用
         #這個用來記錄滑鼠當前位置
-        self.start = (5, 165)
-        self.finish = (1400, 750)
-        self.pos = (5, 165)
-        self.last_pos = (5, 165)
+        self.start = (15, 165)
+        self.finish = (1390, 730)
+        self.pos = (15, 165)
+        self.last_pos = (15, 165)
         self.dx, self.dy = None, None
         self.rect[0], self.rect[1] = self.pos[0]-self.size_half[0], self.pos[1]-self.size_half[1]
         pygame.mouse.set_pos([self.pos[0], self.pos[1]])
@@ -139,7 +139,7 @@ class Player(pygame.sprite.Sprite):
         #血條減少(一次把兩個surface貼上去)
         #這裡要調整難度!!!!!!!!!!!!!!!!!現在可以被摸15次
         for round in range(times):
-            self.blood -= 0
+            self.blood -= 5
             if self.blood > 0:
                 self.blood_surface = pygame.Surface((self.blood, 20))
                 self.blood_surface.fill((255,0,0))

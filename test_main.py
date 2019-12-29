@@ -137,18 +137,11 @@ def main():
     screen.blits(((Hua.empty_surface, (570, 110)), (Hua.blood_surface, (570, 110))))
     screen.blits(((Hua.image, Hua.rect), (BigMac.image, BigMac.rect), (HongYu.image, HongYu.rect), (RM.image, RM.rect), (Jin.image, Jin.rect), (Suga.image, Suga.rect), (J_hope.image, J_hope.rect), (Jimin.image, Jimin.rect), (V.image, V.rect), (Jungkook.image, Jungkook.rect)))
     pygame.display.flip()
+    
     while True:   #這裡的條件還要再另外設定!!!!!!!!!!!!!!!
         if not main_bgm_channel.get_busy():
             main_bgm = main_bgm_list[random.randint(0, len(main_bgm_list)-1)]
             main_bgm_channel = main_bgm.play()
-        
-        #所有事件：上下左右、治療、滑鼠移動(使用道具)
-        #隨時更新滑鼠位置
-        #處理每一個瞬間場景人物的變化，寶貝們每一秒都在動
-        #在一次loop內可能有多個按鍵按下，所以要用for event in pygame.event.get()
-        #先移動再判斷有沒有碰到
-        #這個部分先處理玩家操作，判斷的部分是後面
-        
 
         # NPC的情況
         for event in pygame.event.get():
@@ -237,28 +230,28 @@ def main():
             for member in hua_bts:
                 if member == RM:
                     #破壞
-                    Hua.stepback()
+                    member.stepback()
                     member.skill_flag = True
                 elif member == Jin:
                     #冰凍
-                    Hua.stepback()
+                    member.stepback()
                     member.skill_flag_pic = True
                 elif member == Suga:
                     #石化
-                    Hua.stepback()
+                    member.stepback()
                     member.skill_flag_pic = True
                 elif member == J_hope:
                     #燃燒
-                    Hua.stepback()
+                    member.stepback()
                     member.skill_flag_pic = True
                 elif member == Jimin:
                     #放大
-                    Hua.stepback()
+                    member.stepback()
                     Jimin.skill_flag = True
                     #Hua.image.inflate(1.2, 1.2)
                 elif member == V:
                     #瞬移
-                    Hua.stepback()
+                    member.stepback()
                     member.skill_flag = True
                     Hua.rect[0], Hua.rect[1] = Hua.start[0], Hua.start[1]
                     screen.blit(main_bg[0], main_bg[1])
@@ -272,7 +265,7 @@ def main():
 
                 elif member == Jungkook:
                     #單純的小孩
-                    Hua.stepback()
+                    member.stepback()
                     member.skill_flag = True
 
                 else:
@@ -399,6 +392,10 @@ def main():
 
 
         #判斷過關!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        Hua.last_pos = pygame.mouse.get_pos()
+        print(Hua.last_pos)
+        Hua.rect[0], Hua.rect[1] = Hua.last_pos
+        print("finish:", Hua.rect)
         if Hua.rect[0] > Hua.finish[0] and Hua.rect[1] > Hua.finish[1]:
             applause = load_sound("applause.wav")
             success_flag = True
@@ -411,7 +408,7 @@ def main():
     next = False
     while True:
         for event in pygame.event.get():
-            if event.type == KEYDOWN:
+            if event.type == MOUSEBUTTONDOWN:
                 next = True
                 break
         if next:
@@ -448,8 +445,10 @@ def main():
 #--------------------------------------------------------------------------------------------------------------
     #這是失敗畫面QQ
     while fail_flag:
+        black = pygame.surface.Surface((1440, 800))
+        black.fill((0, 0, 0))
         fail_music = load_sound("so_far_away.wav")
-        fail_bg = load_image("fail_bg", "ending_pic")
+        fail_bg = load_image("fail_bg.jpg", "ending_pic")
         fail_font = pygame.font.Font("game_material/font/HuaKangXiuFengTiFan/HuaKangXiuFengTiFan.ttf", 20)
         fail_s1 = fail_font.render("很遺憾你沒有成功，但是也不要太難過，", True, color)
         fail_s2 = fail_font.render("這只是個遊戲，在現實生活中遇到的困難比這個大多了，", True, color)
@@ -465,8 +464,9 @@ def main():
         fail_s12 = fail_font.render("那你就真的沒救了。", True, color)
         text = [fail_s1, fail_s2, fail_s3, fail_s4, fail_s5, fail_s6, fail_s7, fail_s8, fail_s9, fail_s10, fail_s11, fail_s12]
         fail_music.play(-1)
+        screen.blit(black, (0, 0))
         screen.blit(fail_bg[0], (0, 0))
-        x, y = 140, 300
+        x, y = 140, 200
         for sentence in text:
             screen.blit(sentence, (x, y))
             y += 50
@@ -474,7 +474,7 @@ def main():
         
         while True:
             for event in pygame.event.get():
-                if event.type == KEYDOWN:
+                if event.type == MOUSEBUTTONDOWN:
                     next = True
             if next:
                 break
