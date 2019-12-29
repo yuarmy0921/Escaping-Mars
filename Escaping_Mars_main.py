@@ -523,6 +523,7 @@ def main():
             break
 #-------------------------------------------------------------------------------------------------------------
     #這是過關畫面!!!!!!!
+    pygame.mouse.set_visible(True)
     color = (255, 255, 255)
     while success_flag:
         success_music = load_sound("mikrokosmos.wav")
@@ -610,42 +611,42 @@ def main():
     pygame.display.flip()
     ending_music.play(-1)
     
-    t1 = Title("Team Member", 550)
-    c1 = Content("張悅恩   林郁敏", 600)
+    t1 = Title("Team Member", 400)
+    c1 = Content("張悅恩   林郁敏", 450)
     
-    t2 = Title("GUI Design", 700)
-    c2 = Content("林郁敏", 750)
+    t2 = Title("GUI Design", 550)
+    c2 = Content("林郁敏", 600)
 
-    t3 = Title("Game Configuration Construction", 850)
-    c3 = Content("林郁敏", 900)
+    t3 = Title("Game Configuration Construction", 700)
+    c3 = Content("林郁敏", 750)
 
-    t4 = Title("Character Code", 1000)
-    c4 = Content("林郁敏", 1050)
+    t4 = Title("Character Code", 850)
+    c4 = Content("林郁敏", 900)
 
-    t5 = Title("Maze Code", 1150)
-    c5 = Content("張悅恩", 1200)
+    t5 = Title("Maze Code", 1000)
+    c5 = Content("張悅恩", 1050)
 
-    t6 = Title("Maze Design", 1300)
-    c6 = Content("張悅恩", 1350)
+    t6 = Title("Maze Design", 1150)
+    c6 = Content("張悅恩", 1200)
 
-    t7 = Title("Material Resources", 1450)
-    c7_1 = Content("Character images(BTS): BT21 Copyright © LINE Corporation All rights reserved", 1500)
-    c7_2 = Content("Character image(Hua Chen Yu): https://zhidao.baidu.com/question/525270507842709245.html", 1550)
-    c7_3 = Content("Dialogue frame: Vector Designed By Windy from https://zh.pikbest.com/graphic-elements/hand-drawn-info-box-dialog-design-elements_1151025.html", 1600)
-    c7_4 = Content("Background picture(success): BTS official facebook", 1650)
-    c7_5 = Content("Background picture(fail): https://www.cobaltrecruitment.com/news-blog/item/life-on-mars", 1700)
+    t7 = Title("Material Resources", 1300)
+    c7_1 = Content("Character images(BTS): BT21 Copyright © LINE Corporation All rights reserved", 1350)
+    c7_2 = Content("Character image(Hua Chen Yu): https://zhidao.baidu.com/question/525270507842709245.html", 1400)
+    c7_3 = Content("Dialogue frame: Vector Designed By Windy from https://zh.pikbest.com/graphic-elements/hand-drawn-info-box-dialog-design-elements_1151025.html", 1450)
+    c7_4 = Content("Background picture(success): BTS official facebook", 1500)
+    c7_5 = Content("Background picture(fail): https://www.cobaltrecruitment.com/news-blog/item/life-on-mars", 1550)
 
-    t8 = Title("Background Music", 1800)
-    c8 = Content("BTS-Sea    BTS-So far away    BTS-Epiphany    BTS-Magic shop    BTS-Mikrokosmos    BTS-Make it right    BTS-Tomorrow    BTS-Save ME", 1850)
+    t8 = Title("Background Music", 1650)
+    c8 = Content("BTS-Sea    BTS-So far away    BTS-Epiphany    BTS-Magic shop    BTS-Mikrokosmos    BTS-Make it right    BTS-Tomorrow    BTS-Save ME", 1700)
     
-    t9 = Title("Special THANKS TO", 400)
-    c9 = Content("林宗男 教授     顏宏宇 助教     劉正仁 助教     劉玟慶 助教     郭育昇 助教", 450)
-    ending = Content("All rights reserved", 1650)
+    t9 = Title("Special THANKS TO", 1800)
+    c9 = Content("林宗男 教授     顏宏宇 助教     劉正仁 助教     劉玟慶 助教     郭育昇 助教", 1850)
+    ending = Content("All rights reserved", 1950)
     #
     text = [t1, c1, t2, c2, t3, c3, t4, c4, t5, c5, t6, c6, t7, c7_1, c7_2, c7_3, c7_4, c7_5, t8, c8, t9, c9, ending]
 
     cal = 0
-    while cal <= 10000:
+    while cal <= 2000:
         screen.blit(ending_bg[0], (0, 0))
         for sentence in text:
             #print(sentence.rect[0], sentence.rect[1])
