@@ -18,7 +18,6 @@ def main():
     screen_size = (1440, 800)
     screen = pygame.display.set_mode(screen_size)
     pygame.display.set_caption("Escaping Mars")
-    quit_flag = False
 #---------------------------------------------------------------------------------------------------------------
     #這是初始畫面
     #while前面是設定的部分
@@ -39,6 +38,8 @@ def main():
         #等待使用者按下按鍵
         #Returns a sequence of booleans representing the state of all the mouse buttons.
         for event in pygame.event.get():
+            if event.type == pygame.QUIT :
+                pygame.quit()
             if event.type == MOUSEBUTTONDOWN:
                 next = True
         if next:
@@ -71,6 +72,8 @@ def main():
     pygame.display.flip()
     while True:
         for event in pygame.event.get():  #等待(還沒按下按鍵則在這個loop裡面停留)
+            if event.type == pygame.QUIT :
+                pygame.quit()
             if event.type == MOUSEBUTTONDOWN:
                 next = True
                 break
@@ -101,6 +104,8 @@ def main():
     pygame.display.flip()
     while True:
         for event in pygame.event.get():
+            if event.type == pygame.QUIT :
+                pygame.quit()
             if event.type == MOUSEBUTTONDOWN:
                 next = True
                 break
@@ -143,46 +148,46 @@ def main():
     RM = Game.bts1  #破壞
     RM.screen = screen
     RM.image, RM.rect = load_image("koya.png", "main_pic")
-    RM.rect[0], RM.rect[1] = 720, 280
+    RM.rect[0], RM.rect[1] = 720, 300
     RM.skill = "Dumb: damage"
     RM.sound_flag = True
 
     Jin = Game.bts2   #冰凍
     Jin.screen = screen
     Jin.image, Jin.rect = load_image("rj.png", "main_pic")
-    Jin.rect[0], Jin.rect[1] = 790, 300
+    Jin.rect[0], Jin.rect[1] = 790, 320
     Jin.skill = load_image("ice.png", "main_pic")
 
     Suga = Game.bts3  #石化
     Suga.screen = screen
     Suga.image, Suga.rect = load_image("shooky.png", "main_pic")
-    Suga.rect[0], Suga.rect[1] = 790, 380
+    Suga.rect[0], Suga.rect[1] = 790, 360
     Suga.skill = load_image("stone.png", "main_pic")
 
     J_hope = Game.bts4   #融化
     J_hope.screen = screen
     J_hope.image, J_hope.rect = load_image("mang.png", "main_pic")
-    J_hope.rect[0], J_hope.rect[1] = 750, 420
+    J_hope.rect[0], J_hope.rect[1] = 750, 400
     J_hope.skill = load_image("flame.png", "main_pic")
     J_hope.sound_flag = True
 
     Jimin = Game.bts5   #放大
     Jimin.screen = screen
     Jimin.image, Jimin.rect = load_image("chimmy.png", "main_pic")
-    Jimin.rect[0], Jimin.rect[1] = 690, 420
+    Jimin.rect[0], Jimin.rect[1] = 690, 400
     Jimin.skill = False
 
     V = Game.bts6   #迷路
     V.screen = screen
     V.image, V.rect = load_image("tata.png", "main_pic")
-    V.rect[0], V.rect[1] = 640, 380
+    V.rect[0], V.rect[1] = 640, 360
     V.skill = "Dumb: shift"
     V.sound_flag = True
 
     Jungkook = Game.bts7  #嗜睡
     Jungkook.screen = screen
     Jungkook.image, Jungkook.rect = load_image("cooky.png", "main_pic")
-    Jungkook.rect[0], Jungkook.rect[1] = 650, 300
+    Jungkook.rect[0], Jungkook.rect[1] = 650, 320
     Jungkook.sound_flag = True
 
     BigMac = Game.npc1
@@ -240,6 +245,7 @@ def main():
     #print(Hua.rect)
     #print(HongYu.up, BigMac.up)
     #print("*"+str(RM.rect[0]))
+    time = None
     main_bgm = main_bgm_list[random.randint(0, len(main_bgm_list)-1)]
     main_bgm_channel = main_bgm.play()
     screen.blit(maze.image, maze.rect)
@@ -298,11 +304,7 @@ def main():
         for member in BTS_group:
             member.walk()
 
-        #把圖片技能圖片換回來:
-        if Hua.image != Hua.save_image:
-            Hua.image = Hua.save_image
-            screen.blit(Hua.image, Hua.rect)
-            pygame.display.update(Hua.rect)
+        
         #這裡都在判斷碰撞 !!!!!!!!!!!!!!!!!--------------------------------------------------------------------------------------
         #碰撞的情形
         #玩家 障礙物/BTS/NPC
@@ -460,6 +462,7 @@ def main():
             if member.skill_flag_pic:
                 #蓋上技能(圖片的部分)
                 #有bug!!!!!!!!!!!!
+                time = 0
                 Hua.image = member.skill[0]
                 #受傷
                 Hua.injure(5, member.sound_flag)
@@ -468,15 +471,24 @@ def main():
                 #screen.blit(Hua.image, Hua.rect)
                 #pygame.display.update(Hua.rect)
                 member.skill_flag_pic = False
+                
             if member.skill_flag:
                 if member == RM:
                     Hua.injure(5, RM.sound_flag)
                 else:
                     Hua.scream.play()
                 member.skill_flag = False
+        if Hua.image != Hua.save_image and type(time) == int and time >= 200:
+            #把圖片技能圖片換回來:
+            time = None
+            Hua.image = Hua.save_image
+            screen.blit(Hua.image, Hua.rect)
+            pygame.display.update(Hua.rect)
 
 
         #貼上
+        if type(time) == int:
+            time += 1
         Hua.update()
         BTS_group.update()
         NPC_group.update()
@@ -515,6 +527,8 @@ def main():
     next = False
     while True:
         for event in pygame.event.get():
+            if event.type == pygame.QUIT :
+                pygame.quit()
             if event.type == MOUSEBUTTONDOWN:
                 next = True
                 break
@@ -523,6 +537,7 @@ def main():
             break
 #-------------------------------------------------------------------------------------------------------------
     #這是過關畫面!!!!!!!
+    pygame.mouse.set_visible(True)
     color = (255, 255, 255)
     while success_flag:
         success_music = load_sound("mikrokosmos.wav")
@@ -542,6 +557,8 @@ def main():
         pygame.display.update()
         while True:
             for event in pygame.event.get():
+                if event.type == pygame.QUIT :
+                    pygame.quit()
                 if event.type == MOUSEBUTTONDOWN:
                     next = True
             if next:
@@ -581,6 +598,8 @@ def main():
         
         while True:
             for event in pygame.event.get():
+                if event.type == pygame.QUIT :
+                    pygame.quit()
                 if event.type == MOUSEBUTTONDOWN:
                     next = True
             if next:
@@ -610,42 +629,46 @@ def main():
     pygame.display.flip()
     ending_music.play(-1)
     
-    t1 = Title("Team Member", 550)
-    c1 = Content("張悅恩   林郁敏", 600)
+    t1 = Title("Team Member", 400)
+    c1 = Content("張悅恩   林郁敏", 450)
     
-    t2 = Title("GUI Design", 700)
-    c2 = Content("林郁敏", 750)
+    t2 = Title("GUI Design", 550)
+    c2 = Content("林郁敏", 600)
 
-    t3 = Title("Game Configuration Construction", 850)
-    c3 = Content("林郁敏", 900)
+    t3 = Title("Game Configuration Construction", 700)
+    c3 = Content("林郁敏", 750)
 
-    t4 = Title("Character Code", 1000)
-    c4 = Content("林郁敏", 1050)
+    t4 = Title("Character Code", 850)
+    c4 = Content("林郁敏", 900)
 
-    t5 = Title("Maze Code", 1150)
-    c5 = Content("張悅恩", 1200)
+    t5 = Title("Maze Code", 1000)
+    c5 = Content("張悅恩", 1050)
 
-    t6 = Title("Maze Design", 1300)
-    c6 = Content("張悅恩", 1350)
+    t6 = Title("Maze Design", 1150)
+    c6 = Content("張悅恩", 1200)
 
-    t7 = Title("Material Resources", 1450)
-    c7_1 = Content("Character images(BTS): BT21 Copyright © LINE Corporation All rights reserved", 1500)
-    c7_2 = Content("Character image(Hua Chen Yu): https://zhidao.baidu.com/question/525270507842709245.html", 1550)
-    c7_3 = Content("Dialogue frame: Vector Designed By Windy from https://zh.pikbest.com/graphic-elements/hand-drawn-info-box-dialog-design-elements_1151025.html", 1600)
-    c7_4 = Content("Background picture(success): BTS official facebook", 1650)
-    c7_5 = Content("Background picture(fail): https://www.cobaltrecruitment.com/news-blog/item/life-on-mars", 1700)
+    t7 = Title("Material Resources", 1300)
+    c7_1 = Content("Character images(BTS): BT21 Copyright © LINE Corporation All rights reserved", 1350)
+    c7_2 = Content("Character image(Hua Chen Yu): https://zhidao.baidu.com/question/525270507842709245.html", 1400)
+    c7_3 = Content("Dialogue frame: Vector Designed By Windy from https://zh.pikbest.com/graphic-elements/hand-drawn-info-box-dialog-design-elements_1151025.html", 1450)
+    c7_4 = Content("Background picture(success): BTS official facebook", 1500)
+    c7_5 = Content("Background picture(fail): https://www.cobaltrecruitment.com/news-blog/item/life-on-mars", 1550)
 
-    t8 = Title("Background Music", 1800)
-    c8 = Content("BTS-Sea    BTS-So far away    BTS-Epiphany    BTS-Magic shop    BTS-Mikrokosmos    BTS-Make it right    BTS-Tomorrow    BTS-Save ME", 1850)
+    t8 = Title("Background Music", 1650)
+    c8 = Content("BTS-Sea    BTS-So far away    BTS-Epiphany    BTS-Magic shop    BTS-Mikrokosmos    BTS-Make it right    BTS-Tomorrow    BTS-Save ME", 1700)
     
-    t9 = Title("Special THANKS TO", 400)
-    c9 = Content("林宗男 教授     顏宏宇 助教     劉正仁 助教     劉玟慶 助教     郭育昇 助教", 450)
-    ending = Content("All rights reserved", 1650)
+    t9 = Title("Special THANKS TO", 1800)
+    c9 = Content("林宗男 教授     顏宏宇 助教     劉正仁 助教     劉玟慶 助教     郭育昇 助教", 1850)
+    ending = Content("All rights reserved", 1950)
     #
     text = [t1, c1, t2, c2, t3, c3, t4, c4, t5, c5, t6, c6, t7, c7_1, c7_2, c7_3, c7_4, c7_5, t8, c8, t9, c9, ending]
 
+    
     cal = 0
-    while cal <= 10000:
+    while cal <= 2000:
+        event = pygame.event.poll() 
+        if event.type == pygame.QUIT :
+            pygame.quit()
         screen.blit(ending_bg[0], (0, 0))
         for sentence in text:
             #print(sentence.rect[0], sentence.rect[1])
