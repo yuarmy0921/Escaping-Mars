@@ -117,6 +117,7 @@ class Player(pygame.sprite.Sprite):
 
     def stepback(self):
         self.rect.move_ip(self.last_pos[0], self.last_pos[1])
+        pygame.mouse.set_pos([self.last_pos[0], self.last_pos[1]])
         self.pos = (self.rect[0], self.rect[1])
 
     def recover(self):
