@@ -143,46 +143,46 @@ def main():
     RM = Game.bts1  #破壞
     RM.screen = screen
     RM.image, RM.rect = load_image("koya.png", "main_pic")
-    RM.rect[0], RM.rect[1] = 720, 280
+    RM.rect[0], RM.rect[1] = 720, 300
     RM.skill = "Dumb: damage"
     RM.sound_flag = True
 
     Jin = Game.bts2   #冰凍
     Jin.screen = screen
     Jin.image, Jin.rect = load_image("rj.png", "main_pic")
-    Jin.rect[0], Jin.rect[1] = 790, 300
+    Jin.rect[0], Jin.rect[1] = 790, 320
     Jin.skill = load_image("ice.png", "main_pic")
 
     Suga = Game.bts3  #石化
     Suga.screen = screen
     Suga.image, Suga.rect = load_image("shooky.png", "main_pic")
-    Suga.rect[0], Suga.rect[1] = 790, 380
+    Suga.rect[0], Suga.rect[1] = 790, 360
     Suga.skill = load_image("stone.png", "main_pic")
 
     J_hope = Game.bts4   #融化
     J_hope.screen = screen
     J_hope.image, J_hope.rect = load_image("mang.png", "main_pic")
-    J_hope.rect[0], J_hope.rect[1] = 750, 420
+    J_hope.rect[0], J_hope.rect[1] = 750, 400
     J_hope.skill = load_image("flame.png", "main_pic")
     J_hope.sound_flag = True
 
     Jimin = Game.bts5   #放大
     Jimin.screen = screen
     Jimin.image, Jimin.rect = load_image("chimmy.png", "main_pic")
-    Jimin.rect[0], Jimin.rect[1] = 690, 420
+    Jimin.rect[0], Jimin.rect[1] = 690, 400
     Jimin.skill = False
 
     V = Game.bts6   #迷路
     V.screen = screen
     V.image, V.rect = load_image("tata.png", "main_pic")
-    V.rect[0], V.rect[1] = 640, 380
+    V.rect[0], V.rect[1] = 640, 360
     V.skill = "Dumb: shift"
     V.sound_flag = True
 
     Jungkook = Game.bts7  #嗜睡
     Jungkook.screen = screen
     Jungkook.image, Jungkook.rect = load_image("cooky.png", "main_pic")
-    Jungkook.rect[0], Jungkook.rect[1] = 650, 300
+    Jungkook.rect[0], Jungkook.rect[1] = 650, 320
     Jungkook.sound_flag = True
 
     BigMac = Game.npc1
@@ -240,6 +240,7 @@ def main():
     #print(Hua.rect)
     #print(HongYu.up, BigMac.up)
     #print("*"+str(RM.rect[0]))
+    time = None
     main_bgm = main_bgm_list[random.randint(0, len(main_bgm_list)-1)]
     main_bgm_channel = main_bgm.play()
     screen.blit(maze.image, maze.rect)
@@ -298,11 +299,7 @@ def main():
         for member in BTS_group:
             member.walk()
 
-        #把圖片技能圖片換回來:
-        if Hua.image != Hua.save_image:
-            Hua.image = Hua.save_image
-            screen.blit(Hua.image, Hua.rect)
-            pygame.display.update(Hua.rect)
+        
         #這裡都在判斷碰撞 !!!!!!!!!!!!!!!!!--------------------------------------------------------------------------------------
         #碰撞的情形
         #玩家 障礙物/BTS/NPC
@@ -460,6 +457,7 @@ def main():
             if member.skill_flag_pic:
                 #蓋上技能(圖片的部分)
                 #有bug!!!!!!!!!!!!
+                time = 0
                 Hua.image = member.skill[0]
                 #受傷
                 Hua.injure(5, member.sound_flag)
@@ -468,15 +466,24 @@ def main():
                 #screen.blit(Hua.image, Hua.rect)
                 #pygame.display.update(Hua.rect)
                 member.skill_flag_pic = False
+                
             if member.skill_flag:
                 if member == RM:
                     Hua.injure(5, RM.sound_flag)
                 else:
                     Hua.scream.play()
                 member.skill_flag = False
+        if Hua.image != Hua.save_image and type(time) == int and time >= 200:
+            #把圖片技能圖片換回來:
+            time = None
+            Hua.image = Hua.save_image
+            screen.blit(Hua.image, Hua.rect)
+            pygame.display.update(Hua.rect)
 
 
         #貼上
+        if type(time) == int:
+            time += 1
         Hua.update()
         BTS_group.update()
         NPC_group.update()
