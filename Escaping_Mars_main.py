@@ -18,7 +18,6 @@ def main():
     screen_size = (1440, 800)
     screen = pygame.display.set_mode(screen_size)
     pygame.display.set_caption("Escaping Mars")
-    quit_flag = False
 #---------------------------------------------------------------------------------------------------------------
     #這是初始畫面
     #while前面是設定的部分
@@ -39,6 +38,8 @@ def main():
         #等待使用者按下按鍵
         #Returns a sequence of booleans representing the state of all the mouse buttons.
         for event in pygame.event.get():
+            if event.type == pygame.QUIT :
+                pygame.quit()
             if event.type == MOUSEBUTTONDOWN:
                 next = True
         if next:
@@ -71,6 +72,8 @@ def main():
     pygame.display.flip()
     while True:
         for event in pygame.event.get():  #等待(還沒按下按鍵則在這個loop裡面停留)
+            if event.type == pygame.QUIT :
+                pygame.quit()
             if event.type == MOUSEBUTTONDOWN:
                 next = True
                 break
@@ -101,6 +104,8 @@ def main():
     pygame.display.flip()
     while True:
         for event in pygame.event.get():
+            if event.type == pygame.QUIT :
+                pygame.quit()
             if event.type == MOUSEBUTTONDOWN:
                 next = True
                 break
@@ -522,6 +527,8 @@ def main():
     next = False
     while True:
         for event in pygame.event.get():
+            if event.type == pygame.QUIT :
+                pygame.quit()
             if event.type == MOUSEBUTTONDOWN:
                 next = True
                 break
@@ -550,6 +557,8 @@ def main():
         pygame.display.update()
         while True:
             for event in pygame.event.get():
+                if event.type == pygame.QUIT :
+                    pygame.quit()
                 if event.type == MOUSEBUTTONDOWN:
                     next = True
             if next:
@@ -589,6 +598,8 @@ def main():
         
         while True:
             for event in pygame.event.get():
+                if event.type == pygame.QUIT :
+                    pygame.quit()
                 if event.type == MOUSEBUTTONDOWN:
                     next = True
             if next:
@@ -652,8 +663,12 @@ def main():
     #
     text = [t1, c1, t2, c2, t3, c3, t4, c4, t5, c5, t6, c6, t7, c7_1, c7_2, c7_3, c7_4, c7_5, t8, c8, t9, c9, ending]
 
+    
     cal = 0
     while cal <= 2000:
+        event = pygame.event.poll() 
+        if event.type == pygame.QUIT :
+            pygame.quit()
         screen.blit(ending_bg[0], (0, 0))
         for sentence in text:
             #print(sentence.rect[0], sentence.rect[1])
